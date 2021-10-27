@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link rel="stylesheet" href="{% static '/resources/theme/css/style.css' %}">
+</head>
+<body>
+  <div id="map"></div>
+               <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGveLhPVVebqoESzKq-hxigHk1I0t_aWk&callback=initMap&v=weekly" async></script>
+</body>
+ <script>
+                         var map;
+                         function initMap() {
+                              var seoul = {lat : 37.5643135, lng : 127.0016985};
+                              var map = new google.maps.Map(document.getElementById("map"), {
+                                   zoom : 12,
+                                   center : seoul,
+                              });
+
+                              var marker = new google.maps.Marker({
+                                   position : seoul ,
+                                   map : map ,
+                              });
+                         }
+                    </script>
+
+</html>

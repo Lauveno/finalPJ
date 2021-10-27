@@ -16,4 +16,6 @@ urlpatterns = [
     # path('news_read/' , views.news_read , name = "news_read") ,
     # register
     path('register/' , views.register , name = "register") ,
+
+    path('test/' , views.test , name = "test")
 ]

@@ -29,3 +29,8 @@ def news(request) :
 def register(request) :
     print('mapApp index ~ ')
     return render(request , 'map/register.html')
+
+
+def test(request) :
+    print('test')
+    return render(request , 'map/test.html')
