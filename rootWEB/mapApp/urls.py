@@ -17,5 +17,5 @@ urlpatterns = [
     # register
     path('register/' , views.register , name = "register") ,
 
-    path('test/' , views.test , name = "test")
+
 ]
