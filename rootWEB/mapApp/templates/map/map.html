@@ -67,11 +67,53 @@
      <div class="container">
           <div class="row">
 
-               <button id="whole">전체</button>
-               <button id="veganRestaurant">비건 음식점</button>
-               <button id="veganCafe">비건 카페&베이커리</button>
-               <button id="zerowaste">제로웨이스트 가게</button>
+               <div class="center">
+                    <div class="radio-group">
+                         <label class="radio-label">
+                              <input name="category" type="radio" id="ALL" checked="checked">
+                              <span class="inner-label">전체</span>
+                         </label>
+                         <label class="radio-label">
+                              <input name="category" type="radio" id="VEGAN_RES">
+                              <span class="inner-label">비건 음식점</span>
+                         </label>
+                         <label class="radio-label">
+                              <input name="category" type="radio" id="VEGAN_CAFE">
+                              <span class="inner-label">비건 카페&베이커리</span>
+                         </label>
+                         <label class="radio-label">
+                              <input name="category" type="radio" id="ZEROWASTE">
+                              <span class="inner-label">제로웨이스트 가게</span>
+                         </label>
+                    </div>
+               </div>
 
+<!--               <div class="center">-->
+<!--                    <div class="subcategory-group">-->
+<!--                         <ul id="subCategoryGroup" class="checkbox-list">-->
+<!--                              <label class="checkbox-label">-->
+<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_KOR">-->
+<!--                                   <span class="inner-label">한식</span>-->
+<!--                              </label>-->
+<!--                              <label class="checkbox-label">-->
+<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_WES">-->
+<!--                                   <span class="inner-label">양식</span>-->
+<!--                              </label>-->
+<!--                              <label class="checkbox-label">-->
+<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_CHI">-->
+<!--                                   <span class="inner-label">중식</span>-->
+<!--                              </label>-->
+<!--                              <label class="checkbox-label">-->
+<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_JAP">-->
+<!--                                   <span class="inner-label">일식</span>-->
+<!--                              </label>-->
+<!--                              <label class="checkbox-label">-->
+<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_ANY">-->
+<!--                                   <span class="inner-label">기타</span>-->
+<!--                              </label>-->
+<!--                         </ul>-->
+<!--                    </div>-->
+<!--               </div>-->
 
                <div id="map"></div>
                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGveLhPVVebqoESzKq-hxigHk1I0t_aWk&callback=initMap&v=weekly" async></script>
@@ -133,7 +175,10 @@
 var map ;
 var searchMarker ;
 var totalPlaces = [] ;
+var zerowastePlaces = [] ;
+var veganfoodPlaces = [] ;
 
+/* Map 생성 */
 function initMap() {
      var defaultOptions = {
           zoom : 12 ,
@@ -145,18 +190,24 @@ function initMap() {
      getData() ;
 }
 
+/* AJAX 통신으로 데이터 수신 */
 function getData() {
-     $('#zerowaste').click(function() {
-          alert('btn click')
+     $('#ZEROWASTE').click(function() {
           $.ajax({
                url : '../zerowaste/' ,
                type : 'post' ,
-               data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
                dataType : 'json' ,
-               success : function(list) {
-                    alert('reading');
-                    alert(list[0].name)
-                    alert(list[0].category)
+               data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
+               success : function(zerowaste_list) {
+                    alert('data load');
+                    $.each(zerowaste_list, function(key, value) {
+                         console.log(key, value)
+                         zerowastePlaces.push(value)
+                    });
+                    console.log(zerowastePlaces)
+                    alert('list append')
+
+                    drawMarkers(zerowastePlaces) ;
                } ,
                error : function(request , status , error) {
                     alert('state - '+request.state)
@@ -167,6 +218,7 @@ function getData() {
      });
 }
 
+/* Marker 생성 */
 var markers = [] ;
 function clearMarkers() {
      for(var i = 0 ; i < markers.length ; i++) {
@@ -175,15 +227,17 @@ function clearMarkers() {
      markers = [] ;
 }
 
-function drawMarkers(totalPlaces) {
-     for(var i = 0 ; i < totalPlaces.length ; i++) {
+function drawMarkers(zerowastePlaces) {
+     for(var i = 0 ; i < zerowastePlaces.length ; i++) {
           var marker = new google.maps.Marker ({
                map : map ,
-               position : new google.maps.LatLng(totalPlaces[i].lat , totalPlaces[i].lng)
+               position : new google.maps.LatLng(zerowastePlaces[i].lat , zerowastePlaces[i].lng)
           });
-
           markers.push(marker) ;
      }
+     alert('lat - ' + zerowastePlaces[0].lat) ;
+     alert('lng - ' + zerowastePlaces[0].lng) ;
+     alert('marker push') ;
 }
 
 </script>

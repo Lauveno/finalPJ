@@ -1,4 +1,5 @@
 import chardet
+import numpy as np
 import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -6,8 +7,11 @@ from .models import *
 
 # Create your views here.
 
-# zerowaste_df = pd.read_csv('zerowaste_fin_utf8.csv', encoding='UTF-8', engine='python')
+zerowaste_df = pd.read_csv('zerowaste_fin_utf8.txt', encoding='UTF-8')
+zerowaste_df = zerowaste_df.replace(np.NaN , 0)
 
+veganfood_df = pd.read_csv('veganfood_fin.csv', encoding='UTF-8')
+veganfood_df = veganfood_df.replace(np.NaN , 0)
 
 # About page - main page
 def about(request) :
@@ -21,10 +25,8 @@ def map(request) :
 
 def zerowaste(request) :
     print('mapApp zerowaste index ~')
-    zerowaste_df = pd.read_csv('zerowaste_fin_utf8.csv' , encoding='UTF-8')
     # print(zerowaste_df.head(5))
-
-    print(zerowaste_df['상호명'])
+    # print(zerowaste_df['상호명'])
 
     zerowasteList = []
     for idx in zerowaste_df.index :
@@ -40,9 +42,8 @@ def zerowaste(request) :
             'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
             'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
         })
-    # print(zerowasteList[{'id' : 'jslim' , 'name' : 'jslim'}])
+    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('zerowasteList complete!!')
-    # zerowasteList.append({'id': 'jslim', 'name': '임정섭'})
     print(zerowasteList[0])
 
     return JsonResponse(zerowasteList, safe=False)

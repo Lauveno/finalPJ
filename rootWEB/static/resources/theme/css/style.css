@@ -1,6 +1,7 @@
 
 body {
 		background: #ffffff;
+		color: #111111;
     font-family: 'Work Sans', sans-serif;
     font-style: normal;
 		font-weight: 300;
@@ -361,7 +362,81 @@ a:hover, a:active, a:focus {
   padding-top: 62px;
 }
 
+#map {
+    height: 600px;
+    width : 100%;
+}
 
+
+.center {
+    display: flex;
+}
+
+.radio-group {
+    margin: auto;
+    display: flex;
+
+    @media (max-width: 48em) {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+}
+
+.radio-group-label {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.radio-label {
+    position: relative;
+    display: inline-block;
+    margin: 10px;
+
+    @media (max-width: 48em) {
+        display: block;
+        margin: 10px 0;
+    }
+
+    input {
+        opacity: 0;
+        position: absolute;
+    }
+
+    .inner-label {
+        position: relative;
+        display: inline-block;
+        padding-left: 40px;
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            border-bottom: $border-bottom-input;
+            width: 30px;
+            transition: $border-bottom-transition;
+        }
+    }
+
+    input:focus ~ .inner-label {
+        &:before {
+            border-bottom: $border-bottom-input-focus;
+        }
+    }
+
+    input:checked ~ .inner-label {
+        &:after {
+            content: '\2713';
+            color: #111111;
+            position: absolute;
+            font-size: 12px;
+            left: 12px;
+            top: 1px;
+        }
+    }
+}
 
 /*---------------------------------------
    Single Project section              
