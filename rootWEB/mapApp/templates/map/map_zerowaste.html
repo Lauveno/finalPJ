@@ -1,0 +1,352 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>WWG Zero-waste & No-Plastic & Vegan Map</title>
+
+<link rel="stylesheet" href="{% static '/resources/theme/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static '/resources/theme/css/font-awesome.min.css' %}">
+
+<!-- Main css -->
+<link rel="stylesheet" href="{% static '/resources/theme/css/style.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,700" rel="stylesheet">
+<link rel="short icon" href="#">
+
+</head>
+<body>
+
+<!-- PRE LOADER -->
+
+<div class="preloader">
+     <div class="sk-spinner sk-spinner-wordpress">
+          <span class="sk-inner-circle"></span>
+     </div>
+</div>
+
+<!-- Navigation section  -->
+
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+     <div class="container">
+
+          <div class="navbar-header">
+               <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon icon-bar"></span>
+                    <span class="icon icon-bar"></span>
+                    <span class="icon icon-bar"></span>
+               </button>
+               <a href="../main" class="navbar-brand">
+                    <img src="{% static '/resources/theme/images/WWG_1.png' %}" alt="WWG" width="70" style="max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast;">
+               </a>
+          </div>
+          <div class="collapse navbar-collapse">
+               <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../main">About</a></li>
+
+                    <li class="active"><a href="../map" id="WWG_MAP">Map</a>
+                         <ul>
+                              <li><a href="../map_zerowaste" id="ZEROWASTE_MAP">Zerowaste</a> </li>
+                              <li><a href="../map_vegan" id="VEGAN_MAP">Vegan</a> </li>
+                         </ul>
+                    </li>
+
+                    <li><a href="../board">Board</a></li>
+                    <li><a href="../login">Login</a></li>
+               </ul>
+          </div>
+
+  </div>
+</div>
+
+
+
+<!-- Map Section -->
+
+<section id="main map">
+     <div class="container">
+          <div class="row">
+
+               <div class="center">
+                    <div class="radio-group">
+                         <label class="radio-label">
+                              <input name="category" class="button" type="radio" id="ZEROWASTE_ALL" checked="checked">
+                              <span class="inner-label">전체</span>
+                         </label>
+                         <label class="radio-label">
+                              <input name="category" class="button" type="radio" id="ZEROWASTE">
+                              <span class="inner-label">제로웨이스트</span>
+                         </label>
+                         <label class="radio-label">
+                              <input name="category" class="button" type="radio" id="REFILL_SHOP">
+                              <span class="inner-label">리필샵</span>
+                         </label>
+                         <label class="radio-label">
+                              <input name="category" class="button" type="radio" id="RECYCLE">
+                              <span class="inner-label">다회용기</span>
+                         </label>
+                         <label class="radio-label">
+                              <input name="category" class="button" type="radio" id="ZEROWASTE_ETC">
+                              <span class="inner-label">기타</span>
+                         </label>
+                    </div>
+               </div>
+
+               <div id="map"></div>
+               <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGveLhPVVebqoESzKq-hxigHk1I0t_aWk&callback=initMap&v=weekly" async></script>
+
+               <div class="col-md-12 col-sm-12 text-center">
+                    <h4>상호 등록을 원할경우 <a href="../register">Register page</a></h4>
+                    <h4>회원 가입을 원할경우 <a href="../login">Login page</a></h4>
+               </div>
+          </div>
+     </div>
+</section>
+
+<!-- Footer Section -->
+
+<footer>
+     <div class="container">
+          <div class="row">
+
+               <div class="col-md-3 col-sm-3">
+                    <img src="{% static '/resources/theme/images/WWG_1.png' %}" alt="WWG" width="70" style="max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast;">
+               </div>
+
+               <div class="col-md-4 col-sm-4">
+                    <p>124 Market Street, Suite 3570 San Francisco, CA 3042 United States</p>
+               </div>
+
+               <div class="col-md-offset-1 col-md-4 col-sm-offset-1 col-sm-3">
+                    <p><a href="https://github.com/Lauveno/finalPJ">github address</a></p>
+               </div>
+
+               <div class="clearfix col-md-12 col-sm-12">
+                    <hr>
+               </div>
+
+               <div class="col-md-6 col-sm-6">
+                    <div class="footer-copyright">
+                         <p>2021.November WWG | All Rights Reserved.</p>
+                    </div>
+               </div>
+
+               <div class="col-md-6 col-sm-6">
+                    <ul class="social-icon">
+                         <li><a href="https://github.com/Lauveno/finalPJ" class="fa fa-github"></a></li>
+                    </ul>
+               </div>
+
+          </div>
+     </div>
+</footer>
+
+
+<!-- SCRIPTS -->
+
+<script src="{% static '/resources/theme/js/jquery.js' %}"></script>
+<script src="{% static '/resources/theme/js/bootstrap.min.js' %}"></script>
+<script src="{% static '/resources/theme/js/custom.js' %}"></script>
+
+<script>
+var map ;
+var searchMarker ;
+var zerowastePlaces = [] ;
+
+/* Map 생성 */
+function initMap() {
+     var defaultOptions = {
+          zoom : 12 ,
+          center : new google.maps.LatLng(37.5643135 , 127.0016985),
+          disableDefaultUI : true ,
+          zoomControl : false ,
+          gestureHandling : 'greedy' ,
+     }
+     map = new google.maps.Map(document.getElementById("map"), defaultOptions);
+     getData() ;
+}
+
+/* Data 통신 */
+function getData() {
+    $('.button').click(function() {
+        var button_id = $(this).attr('id') ;
+        alert(button_id) ;
+        switch(button_id) {
+            case 'ZEROWASTE' :
+            clearMarkers() ;
+            $.ajax({
+                url : '../zerowaste_data/' ,
+                type : 'post' ,
+                dataType : 'json' ,
+                data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
+                success : function(zerowaste_list) {
+                    $.each(zerowaste_list, function(key, value) {
+                        zerowastePlaces.push(value)
+                    });
+                    console.log(zerowastePlaces)
+                    drawMarkers(zerowastePlaces) ;
+                    zerowastePlaces = [] ;
+                } ,
+                error : function(request , status , error) {
+                alert('state - '+request.state)
+                alert('msg - '+request.responseText)
+                alert('error - '+error)
+                }
+            });
+
+            case 'ZEROWASTE_ALL' :
+            clearMarkers() ;
+            $.ajax({
+                url : '../zerowaste_data_all/' ,
+                type : 'post' ,
+                dataType : 'json' ,
+                data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
+                success : function(zerowaste_list) {
+                    $.each(zerowaste_list, function(key, value) {
+                        zerowastePlaces.push(value)
+                    });
+                    console.log(zerowastePlaces)
+                    drawMarkers(zerowastePlaces) ;
+                    zerowastePlaces = [] ;
+                } ,
+                error : function(request , status , error) {
+                alert('state - '+request.state)
+                alert('msg - '+request.responseText)
+                alert('error - '+error)
+                }
+            });
+
+            case 'REFILL_SHOP' :
+            clearMarkers() ;
+            $.ajax({
+                url : '../zerowaste_data_refill/' ,
+                type : 'post' ,
+                dataType : 'json' ,
+                data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
+                success : function(zerowaste_list) {
+                    $.each(zerowaste_list, function(key, value) {
+                        zerowastePlaces.push(value)
+                    });
+                    console.log(zerowastePlaces)
+                    drawMarkers(zerowastePlaces) ;
+                    zerowastePlaces = [] ;
+                } ,
+                error : function(request , status , error) {
+                alert('state - '+request.state)
+                alert('msg - '+request.responseText)
+                alert('error - '+error)
+                }
+            });
+
+            case 'RECYCLE' :
+            clearMarkers() ;
+            $.ajax({
+                url : '../zerowaste_data_recycle/' ,
+                type : 'post' ,
+                dataType : 'json' ,
+                data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
+                success : function(zerowaste_list) {
+                    $.each(zerowaste_list, function(key, value) {
+                        zerowastePlaces.push(value)
+                    });
+                    console.log(zerowastePlaces)
+                    drawMarkers(zerowastePlaces) ;
+                    zerowastePlaces = [] ;
+                } ,
+                error : function(request , status , error) {
+                alert('state - '+request.state)
+                alert('msg - '+request.responseText)
+                alert('error - '+error)
+                }
+            });
+
+            case 'ZEROWASTE_ETC' :
+            clearMarkers() ;
+            $.ajax({
+                url : '../zerowaste_data_etc/' ,
+                type : 'post' ,
+                dataType : 'json' ,
+                data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
+                success : function(zerowaste_list) {
+                    $.each(zerowaste_list, function(key, value) {
+                        zerowastePlaces.push(value)
+                    });
+                    console.log(zerowastePlaces)
+                    drawMarkers(zerowastePlaces) ;
+                    zerowastePlaces = [] ;
+                } ,
+                error : function(request , status , error) {
+                alert('state - '+request.state)
+                alert('msg - '+request.responseText)
+                alert('error - '+error)
+                }
+            });
+        }
+    }) ;
+}
+
+/* Marker 생성 */
+var markers = [] ;
+function clearMarkers() {
+     for(var i = 0 ; i < markers.length ; i++) {
+          markers[i].setMap(null);
+     }
+     markers = [] ;
+}
+
+function drawMarkers(zerowastePlaces) {
+<!--     var size_x = 40 ;-->
+<!--     var size_y = 40 ;-->
+<!--     var myIcon =  new google.maps.MarkerImage('https://cdn-icons.flaticon.com/png/512/4551/premium/4551363.png?token=exp=1636563992~hmac=a7762c7b9f5aa1fa64d400b6c5c6b0ab' ,-->
+<!--                              new google.maps.Size(size_x , size_y) );-->
+     for(var i = 0 ; i < zerowastePlaces.length ; i++) {
+          var marker = new google.maps.Marker ({
+               map : map ,
+               position : new google.maps.LatLng(zerowastePlaces[i].lat , zerowastePlaces[i].lng) ,
+<!--               icon : myIcon-->
+          });
+          marker.name = zerowastePlaces[i].name ;
+          marker.number = zerowastePlaces[i].number ;
+          marker.address = zerowastePlaces[i].address ;
+          marker.category = zerowastePlaces[i].category ;
+          marker.about = zerowastePlaces[i].about ;
+
+          markers.push(marker) ;
+     }
+
+     for(var j = 0 ; j < markers.length ; j++) {
+          google.maps.event.addListener(markers[j] , 'click' , function() {
+               map.setCenter(this.getPosition()) ;
+<!--               map.setZoom(17) ;-->
+
+               var contentString = "<div><div id='name'>" + marker.name +
+                                                  "</div><br>Tel. " + marker.number +
+                                                  "<br>Addr. " + marker.address +
+                                                  "<br>Cat. " + marker.category +
+                                                  "<br>About. " + marker.about + "</div>"
+
+               var infowindow = new google.maps.InfoWindow({
+                    content : contentString ,
+               });
+               infowindow.open(map , this) ;
+          });
+
+<!--          infowindow.addListener('closeclick' , function() {-->
+<!--               map.setCenter(37.5643135 , 127.0016985 , 12)-->
+<!--          });-->
+     }
+}
+
+
+</script>
+
+</body>
+</html>

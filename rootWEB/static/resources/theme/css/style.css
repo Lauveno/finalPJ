@@ -208,16 +208,17 @@ a:hover, a:active, a:focus {
     padding-left: 22px;
 }
 
+/* nav안의 직계 li들의 a값에 커서 올렸을 때 */
 .navbar-default .navbar-nav > li a:hover {
     color: #333 !important;
 }
-
+/* nav 직계 li 직계 a 값에 커서 올렸을 때 & 클릭 했을 때*/
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
     color: #777;
     background-color: transparent;
 }
-
+/* nav 안의 li 안의 a 값에 커서 올렸을 때 & 동작중인 a값에 커서 올렸을 때*/
 .navbar-default .navbar-nav li a:hover,
  .navbar-default .navbar-nav .active > a {
     color: #333;
@@ -229,6 +230,35 @@ a:hover, a:active, a:focus {
     color: #333;
     background-color: transparent;
 }
+
+/* dropdown menu */
+
+.navbar-default .navbar-nav li ul li { display : none ;}
+.navbar-default .navbar-nav > .active li ul li { display : none ;}
+
+.navbar-default .navbar-nav li > a:after { content : ' +' ; }
+.navbar-default .navbar-nav li > a:only-child:after { content : '' ; }
+
+.navbar-default .navbar-nav li:hover ul {
+    position : absolute ;
+    left : 0;
+    display : block ;
+}
+
+.navbar-default .navbar-nav li:hover ul li {
+    display : block ;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-nav li:hover ul li a {
+    color: #777;
+}
+
+.navbar-default .navbar-nav li:hover ul li a:hover {
+    color: #333 ;
+    background-color: transparent;
+}
+
 
 .navbar-default .navbar-toggle {
      border: none;

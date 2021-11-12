@@ -51,7 +51,14 @@
           <div class="collapse navbar-collapse">
                <ul class="nav navbar-nav navbar-right">
                     <li><a href="../main">About</a></li>
-                    <li class="active"><a href="../map">Map</a></li>
+
+                    <li class="active"><a href="../map" id="WWG_MAP">Map</a>
+                         <ul>
+                              <li><a href="../map_zerowaste" id="ZEROWASTE_MAP">Zerowaste</a> </li>
+                              <li><a href="../map_vegan" id="VEGAN_MAP">Vegan</a> </li>
+                         </ul>
+                    </li>
+
                     <li><a href="../board">Board</a></li>
                     <li><a href="../login">Login</a></li>
                </ul>
@@ -60,60 +67,24 @@
   </div>
 </div>
 
+<!-- Home Section -->
+
+<section id="home">
+     <div class="container">
+          <div class="row">
+               <div class="col-md-12 col-sm-12">
+                    <h5>WWG에 대한 subscribe</h5>
+                    <hr>
+               </div>
+          </div>
+     </div>
+</section>
 
 <!-- Map Section -->
 
 <section id="main map">
      <div class="container">
           <div class="row">
-
-               <div class="center">
-                    <div class="radio-group">
-                         <label class="radio-label">
-                              <input name="category" type="radio" id="ALL" checked="checked">
-                              <span class="inner-label">전체</span>
-                         </label>
-                         <label class="radio-label">
-                              <input name="category" type="radio" id="VEGAN_RES">
-                              <span class="inner-label">비건 음식점</span>
-                         </label>
-                         <label class="radio-label">
-                              <input name="category" type="radio" id="VEGAN_CAFE">
-                              <span class="inner-label">비건 카페&베이커리</span>
-                         </label>
-                         <label class="radio-label">
-                              <input name="category" type="radio" id="ZEROWASTE">
-                              <span class="inner-label">제로웨이스트 가게</span>
-                         </label>
-                    </div>
-               </div>
-
-<!--               <div class="center">-->
-<!--                    <div class="subcategory-group">-->
-<!--                         <ul id="subCategoryGroup" class="checkbox-list">-->
-<!--                              <label class="checkbox-label">-->
-<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_KOR">-->
-<!--                                   <span class="inner-label">한식</span>-->
-<!--                              </label>-->
-<!--                              <label class="checkbox-label">-->
-<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_WES">-->
-<!--                                   <span class="inner-label">양식</span>-->
-<!--                              </label>-->
-<!--                              <label class="checkbox-label">-->
-<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_CHI">-->
-<!--                                   <span class="inner-label">중식</span>-->
-<!--                              </label>-->
-<!--                              <label class="checkbox-label">-->
-<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_JAP">-->
-<!--                                   <span class="inner-label">일식</span>-->
-<!--                              </label>-->
-<!--                              <label class="checkbox-label">-->
-<!--                                   <input name="subcategory" type="checkbox" id="VEGAN_RES_ANY">-->
-<!--                                   <span class="inner-label">기타</span>-->
-<!--                              </label>-->
-<!--                         </ul>-->
-<!--                    </div>-->
-<!--               </div>-->
 
                <div id="map"></div>
                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGveLhPVVebqoESzKq-hxigHk1I0t_aWk&callback=initMap&v=weekly" async></script>
@@ -187,57 +158,6 @@ function initMap() {
           zoomControl : false ,
      }
      map = new google.maps.Map(document.getElementById("map"), defaultOptions);
-     getData() ;
-}
-
-/* AJAX 통신으로 데이터 수신 */
-function getData() {
-     $('#ZEROWASTE').click(function() {
-          $.ajax({
-               url : '../zerowaste/' ,
-               type : 'post' ,
-               dataType : 'json' ,
-               data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' } ,
-               success : function(zerowaste_list) {
-                    alert('data load');
-                    $.each(zerowaste_list, function(key, value) {
-                         console.log(key, value)
-                         zerowastePlaces.push(value)
-                    });
-                    console.log(zerowastePlaces)
-                    alert('list append')
-
-                    drawMarkers(zerowastePlaces) ;
-               } ,
-               error : function(request , status , error) {
-                    alert('state - '+request.state)
-                    alert('msg - '+request.responseText)
-                    alert('error - '+error)
-               }
-          });
-     });
-}
-
-/* Marker 생성 */
-var markers = [] ;
-function clearMarkers() {
-     for(var i = 0 ; i < markers.length ; i++) {
-          markers[i].setMap(null);
-     }
-     markers = [] ;
-}
-
-function drawMarkers(zerowastePlaces) {
-     for(var i = 0 ; i < zerowastePlaces.length ; i++) {
-          var marker = new google.maps.Marker ({
-               map : map ,
-               position : new google.maps.LatLng(zerowastePlaces[i].lat , zerowastePlaces[i].lng)
-          });
-          markers.push(marker) ;
-     }
-     alert('lat - ' + zerowastePlaces[0].lat) ;
-     alert('lng - ' + zerowastePlaces[0].lng) ;
-     alert('marker push') ;
 }
 
 </script>

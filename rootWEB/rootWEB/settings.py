@@ -38,6 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mapApp' ,
+    # # Allauth를 위한 Apps
+    # 'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # # 소셜로그인을 할 제공자 리스트를 아래에 포함
+    # 'allauth.socialaccount.providers.naver',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +136,11 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR , 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# AUTHENTICATION_BACKENDS =(
+#     'django.contrib.auth.backends.ModelBackend',
+#     'allauth.account.auth_backends.AuthenticationBacked',
+# )
+
+# SITE_ID = 1
+# LOGIN_REDIRECT_URL = '/'
