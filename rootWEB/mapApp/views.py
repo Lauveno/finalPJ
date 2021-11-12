@@ -496,7 +496,7 @@ def CsvToModel(request):
     WwgZerowaste.objects.bulk_create(z_list)
 
     # Vegan Food Shop loading
-    path = 'C:/Users/user/PJT/WeWantGreen/rootWEB/vegan_fin_utf8.txt'
+    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/vegan_fin_utf8.txt'
     file = open(path, encoding='utf-8')
     reader = csv.reader(file)
     print('----', reader)
