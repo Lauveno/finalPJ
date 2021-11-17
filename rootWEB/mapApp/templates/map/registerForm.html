@@ -62,7 +62,11 @@
                     </li>
 
                     <li><a href="../board">Board</a></li>
+                    {% if request.session.user %}
+                    <li><a href="../logout">[{{user_id}}]  Logout</a></li>
+                    {% else %}
                     <li><a href="../login">Login</a></li>
+                    {% endif %}
                </ul>
           </div>
 

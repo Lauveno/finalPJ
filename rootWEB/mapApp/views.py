@@ -1,13 +1,14 @@
 import chardet
 import numpy as np
 import pandas as pd
-from django.http import JsonResponse , HttpResponse
+from django.http import JsonResponse , HttpResponse , HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .models import *
 
 # Login에 이용되는 Module
 import csv
 from django.contrib.auth.hashers import make_password, check_password #비밀번호 암호화 / 패스워드 체크(db에있는거와 일치성확인)
+from django.contrib import auth
 
 # Create your views here.
 
@@ -35,16 +36,28 @@ def about(request) :
 # main map
 def map(request) :
     print('mapApp map index ~ ')
+    myuser = request.session.get('user')
+    if myuser:
+        user = WwgUser.objects.get(user_id=myuser)
+        return render(request, 'map/map.html', {'user_id': user})
     return render(request , 'map/map.html')
 
 # zerowaste map
 def map_zerowaste(request) :
     print('mapApp map_zerowaste index ~ ')
+    myuser = request.session.get('user')
+    if myuser:
+        user = WwgUser.objects.get(user_id=myuser)
+        return render(request, 'map/map_zerowaste.html', {'user_id': user})
     return render(request , 'map/map_zerowaste.html')
 
 # vegan map
 def map_vegan(request) :
     print('mapApp map_vegan index ~ ')
+    myuser = request.session.get('user')
+    if myuser:
+        user = WwgUser.objects.get(user_id=myuser)
+        return render(request, 'map/map_vegan.html', {'user_id': user})
     return render(request , 'map/map_vegan.html')
 
 
@@ -81,8 +94,6 @@ def wwg_place_data(request) :
 # 전체
 def zerowaste_data_all(request) :
     print('mapApp zerowaste all index ~')
-    # print(zerowaste_df.head(5))
-    # print(zerowaste_df['상호명'])
 
     zerowasteList = []
     for idx in zerowaste_df.index :
@@ -98,18 +109,13 @@ def zerowaste_data_all(request) :
             'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
             'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
         })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('zerowasteList all complete!!')
-    print(zerowasteList[0])
 
     return JsonResponse(zerowasteList, safe=False)
 
 # 제로웨이스트
 def zerowaste_data(request) :
     print('mapApp zerowaste index ~')
-    # print(zerowaste_df.head(5))
-    # print(zerowaste_df['상호명'])
-    print(zerowaste_df.iloc[ : , 4])
 
     zerowasteList = []
     for idx in zerowaste_df.index :
@@ -126,17 +132,13 @@ def zerowaste_data(request) :
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
                 'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('zerowasteList complete!!')
-    print(zerowasteList)
 
     return JsonResponse(zerowasteList, safe=False)
 
 # 리필샵
 def zerowaste_data_refill(request) :
     print('mapApp zerowaste refill index ~')
-    # print(zerowaste_df.head(5))
-    # print(zerowaste_df['상호명'])
 
     zerowasteList = []
     for idx in zerowaste_df.index :
@@ -153,17 +155,13 @@ def zerowaste_data_refill(request) :
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
                 'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('zerowasteList refill complete!!')
-    print(zerowasteList[0])
 
     return JsonResponse(zerowasteList, safe=False)
 
 # 다회용기
 def zerowaste_data_recycle(request) :
     print('mapApp zerowaste recycle index ~')
-    # print(zerowaste_df.head(5))
-    # print(zerowaste_df['상호명'])
 
     zerowasteList = []
     for idx in zerowaste_df.index :
@@ -180,17 +178,13 @@ def zerowaste_data_recycle(request) :
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
                 'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('zerowasteList recycle complete!!')
-    print(zerowasteList[0])
 
     return JsonResponse(zerowasteList, safe=False)
 
 # 기타
 def zerowaste_data_etc(request) :
     print('mapApp zerowaste etc index ~')
-    # print(zerowaste_df.head(5))
-    # print(zerowaste_df['상호명'])
 
     zerowasteList = []
     for idx in zerowaste_df.index :
@@ -207,9 +201,7 @@ def zerowaste_data_etc(request) :
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
                 'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('zerowasteList etc complete!!')
-    print(zerowasteList[0])
 
     return JsonResponse(zerowasteList, safe=False)
 
@@ -218,7 +210,6 @@ def zerowaste_data_etc(request) :
 # 전체
 def vegan_data_all(request) :
     print('mapApp vegan index ~')
-    # print(vegan_df.head(5))
 
     veganList = []
     for idx in vegan_df.index:
@@ -234,16 +225,13 @@ def vegan_data_all(request) :
             'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
             'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
         })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
 # 한식
 def vegan_data_kor(request) :
     print('mapApp vegan kor index ~')
-    print(vegan_df.iloc[ : , 7])
 
     veganList = []
     for idx in vegan_df.index:
@@ -260,9 +248,7 @@ def vegan_data_kor(request) :
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
                 'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
@@ -285,9 +271,7 @@ def vegan_data_wes(request) :
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
                 'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
@@ -310,9 +294,7 @@ def vegan_data_chi(request) :
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
                 'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
@@ -335,9 +317,7 @@ def vegan_data_jap(request) :
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
                 'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
@@ -360,9 +340,7 @@ def vegan_data_cafe(request) :
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
                 'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
@@ -385,9 +363,7 @@ def vegan_data_bake(request) :
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
                 'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
@@ -410,9 +386,7 @@ def vegan_data_etc(request) :
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
                 'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
             })
-    # print(zerowasteList[{'id' : '1' , 'name' : 'asdf'}])
     print('veganList all complete!!')
-    # print(veganList[0])
 
     return JsonResponse(veganList, safe=False)
 
@@ -441,8 +415,9 @@ def login(request):
     return render(request, 'map/login.html')
 
 # 로그아웃
-def logout(request):
-    return redirect('main')
+def logout(request) :
+    auth.logout(request)
+    return HttpResponseRedirect('../main')
 
 #
 def join(request):
@@ -526,9 +501,3 @@ def CsvToModel(request):
 def board(request):
     print('mapApp index ~ ')
     return render(request, 'map/board.html')
-
-
-# def register(request) :
-#     print('mapApp index ~ ')
-#     return render(request , 'map/registerForm.html')
-

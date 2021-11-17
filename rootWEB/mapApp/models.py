@@ -57,8 +57,36 @@ class WwgVegan(models.Model) :
 
 class WwgClick(models.Model) :
     user_id = models.CharField(max_length=50)
-    name = models.CharField(max_length=200)
-    cnt = models.IntegerField()
+    index = models.IntegerField(default=0)
+    cnt = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.user_id + self.name + self.cnt
+
+class WwgZerowasteClick(models.Model) :
+    user_id = models.CharField(max_length=50)
+    index = models.IntegerField(default=0)
+    cnt = models.PositiveIntegerField(default=0)
+
+    @property
+    def update_counter(self):
+        self.cnt = self.cnt + 1
+        self.save()
+
+    def __str__(self):
+        return self.user_id + self.name + self.cnt
+
+
+
+class WwgVeganClick(models.Model) :
+    user_id = models.CharField(max_length=50)
+    index = models.IntegerField(default=0)
+    cnt = models.PositiveIntegerField(default=0)
+
+    @property
+    def update_counter(self):
+        self.cnt = self.cnt + 1
+        self.save()
 
     def __str__(self):
         return self.user_id + self.name + self.cnt

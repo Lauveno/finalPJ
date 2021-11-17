@@ -343,57 +343,10 @@ a:hover, a:active, a:focus {
 
 
 /*---------------------------------------
-   Portfolio section              
+   Map section
 -----------------------------------------*/
-
-#portfolio small {
-  color: #f0f0f0;
-  font-size: 10px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-#portfolio .portfolio-thumb {
-  position: relative;
-  padding: 0;
-  margin-top: 32px;
-}
-
-#portfolio .portfolio-thumb .portfolio-overlay {
-  position: absolute;
-  background: #222;
-  color: #ffffff;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  vertical-align: top;
-  opacity: 0;
-  transition: all 0.4s ease-in-out;
-}
-
-#portfolio .portfolio-item {
-    position: absolute;
-    top:50%;
-    left: 50%;
-    -webkit-transform:translate(-50%,-50%);
-      -ms-transform:translate(-50%,-50%);
-          transform:translate(-50%,-50%);
-}
-
-#portfolio .portfolio-thumb:hover .portfolio-overlay {
-  opacity: 0.9;
-}
-
-#portfolio .text-center {
-  padding-top: 62px;
-}
-
 #map {
-    height: 600px;
+    height: 800px;
     width : 100%;
 }
 
@@ -468,241 +421,84 @@ a:hover, a:active, a:focus {
     }
 }
 
-/*---------------------------------------
-   Single Project section              
------------------------------------------*/
 
-#single-project {
-  text-align: center;
+
+
+.popup_wrap {
+  cursor: auto;
+  height: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
 }
 
-#single-project .col-md-12,
-#single-project .col-md-6,
-#single-project .col-md-4 {
-  padding-left: 0px;
-  padding-bottom: 22px;
+.popup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -100%);
+  background-color: white;
+  border-radius: 3px;
+  overflow-y: auto;
+  border: 1px solid #cdcdcd;
+  box-shadow: 0px 1px 0px 0px rgba(150, 150, 150, 0.5);
 }
 
-#single-project .col-md-12 {
-  padding-top: 42px;
-}
-
-#single-project .text-center strong {
-  display: block;
-  padding-top: 12px;
-}
-
-#single-project a {
-  color: #555;
-  font-weight: bold;
-  letter-spacing: 1px;
-  padding-left: 14px;
-}
-
-
-
-/*---------------------------------------
-   Contact section              
------------------------------------------*/
-
-#contact .col-md-6,
-#contact .col-md-12 {
-  padding-left: 0px;
-}
-
-#contact .form-control {
-  border: 1px solid #f0f0f0;
-  box-shadow: none;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  transition: all 0.4s ease-in-out;
-}
-
-#contact .form-control:hover {
-  border-color: #777;
-}
-
-#contact input,
-#contact select {
-  height: 50px;
-}
-
-#contact input[type="submit"] {
-  background: #222;
-  border-radius: 100px;
-  border: none;
-  color: #ffffff;
-  font-weight: 400;
-  transition: all 0.4s ease-in-out;
-}
-
-#contact input[type="submit"]:hover {
-  background: #000;
-}
-
-
-
-/*---------------------------------------
-   Blog section              
------------------------------------------*/
-
-.blog-post-thumb {
-  border-bottom: 1px solid #f0f0f0;
-  padding-top: 32px;
-  padding-bottom: 62px;
-  margin-bottom: 32px;
-}
-
-.blog-post-thumb:last-child {
-  border-bottom: 0px;
-  padding-bottom: 32px;
-  margin-bottom: 0px;
-}
-
-.blog-post-image {
-  padding-bottom: 18px;
+.popup-anchor {
+  position: absolute;
   width: 100%;
+  bottom: 1px;
+  left: 0;
 }
 
-.blog-post-title a {
-  color: #555;
+.popup-anchor::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, 0);
+
+  width: 22px;
+  height: 12px;
+  background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png");
 }
 
-.blog-post-title a:hover {
-  color: #000;
+.info_title {
+  border-bottom: 1px solid #cdcdcd;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: BOLD;
+  color: darkslateblue;
 }
 
-.blog-post-format {
-  padding-bottom: 22px;
-}
-
-.blog-post-format span {
-  letter-spacing: 0.5px;
-  padding-right: 12px;
-}
-
-.blog-post-format span a {
-  color: #333;
-}
-
-.blog-post-format span img {
+.place_name {
   display: inline-block;
-  width: 42px;
-  margin-right: 4px;
+  max-width: 140px;
 }
 
-.blog-post-des blockquote {
-  margin: 22px;
+.info_rest {
+  margin: 5px;
+  padding: 7px;
+  font-size: 14px;
 }
 
-.blog-post-des .btn {
-  border-radius: 100px;
-  color: #777;
-  font-weight: 400;
-  letter-spacing: 1px;
-  padding: 14px 28px;
-  margin-top: 26px;
-  transition: all 0.4s ease-in-out;
+.more_detail {
+  width: 25px;
+  height: 25px;
+  float: right;
+  border: 1px solid #cdcdcd;
+  border-radius: 30px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
 }
 
-.blog-post-des .btn:hover {
-  background: #000;
-  border-color: transparent;
+.more_detail:hover {
+  background-image: linear-gradient(to right, #37ecba, #72afd3);
   color: #ffffff;
 }
-
-.blog-author {
-  border-top: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
-  padding-top: 32px;
-  padding-bottom: 32px;
-  margin-top: 42px;
-  margin-bottom: 42px;
-}
-
-.blog-author .media img {
-  display: inline-block;
-  width: 90px;
-  margin-right: 12px;
-}
-
-.blog-author .media a,
-.blog-comment .media h3 {
-  color: #444;
-  font-size: 18px;
-  letter-spacing: 1px;
-}
-
-.blog-comment {
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 32px;
-  margin-bottom: 42px;
-}
-
-.blog-comment .media:nth-child(3) {
-  padding-top: 18px;
-}
-
-.blog-comment .media img {
-  width: 80px;
-  margin-right: 12px;
-}
-
-.blog-comment .media h3 {
-  display: inline-block;
-  padding-right: 14px;
-}
-
-.blog-comment h3,
-.blog-comment-form h3 {
-  padding-bottom: 18px;
-}
-
-.blog-comment-form .col-md-4 {
-  padding-left: 0px;
-}
-
-.blog-comment-form .form-control {
-  box-shadow: none;
-  border: 1px solid #f0f0f0;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  transition: all 0.4s ease-in-out;
-}
-
-.blog-comment-form .form-control:hover {
-  border-color: #777;
-}
-
-.blog-comment-form input {
-  height: 45px;
-}
-
-.blog-comment-form input[type="submit"] {
-  background: #222;
-  border-radius: 100px;
-  border: none;
-  color: #ffffff;
-  font-weight: 400;
-  transition: all 0.4s ease-in-out;
-}
-
-.blog-comment-form input[type="submit"]:hover {
-  background: #000;
-  border-color: transparent;
-}
-
-
-
-/*---------------------------------------
-   Blog Single Post section              
------------------------------------------*/
-
-#blog-single-post .blog-post-des h3 {
-  padding-top: 16px;
-}
-
-
 
 /*---------------------------------------
    Footer section              
@@ -816,5 +612,3 @@ footer .footer-copyright {
   }
 
 }
-
-

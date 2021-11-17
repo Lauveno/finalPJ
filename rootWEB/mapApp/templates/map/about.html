@@ -53,13 +53,17 @@
 
                     <li><a href="../map">Map</a>
                          <ul>
-                              <li><a href="../zerowaste">Zerowaste</a> </li>
-                              <li><a href="../vegan">Vegan</a> </li>
+                              <li><a href="../map_zerowaste">Zerowaste</a> </li>
+                              <li><a href="../map_vegan">Vegan</a> </li>
                          </ul>
                     </li>
 
                     <li><a href="../board">Board</a></li>
+                    {% if request.session.user %}
+                    <li><a href="../logout">[{{user_id}}]  Logout</a></li>
+                    {% else %}
                     <li><a href="../login">Login</a></li>
+                    {% endif %}
                </ul>
           </div>
 

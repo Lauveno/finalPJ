@@ -3,22 +3,37 @@ var searchMarker ;
 var veganPlaces = [] ;
 var zerowastePlaces = [] ;
 
+/*--------------------
+         Map 생성
+ --------------------- */
+//function initMap() {
+//     var defaultOptions = {
+//          zoom : 12 ,
+//          center : new google.maps.LatLng(37.5643135 , 127.0016985),
+//          disableDefaultUI : true ,
+//          zoomControl : false ,
+//          gestureHandling : 'greedy' ,
+//     }
+//     map = new google.maps.Map(document.getElementById("map"), defaultOptions);
+//     getData() ;
+//}
 
-/* Map 생성 */
-function initMap() {
-     var defaultOptions = {
-          zoom : 12 ,
-          center : new google.maps.LatLng(37.5643135 , 127.0016985),
-          disableDefaultUI : true ,
-          zoomControl : false ,
-          gestureHandling : 'greedy' ,
-     }
-     map = new google.maps.Map(document.getElementById("map"), defaultOptions);
-     getData() ;
+window.initAutocomplete = function() {
+    map = new google.maps.Map(document.getElementById("map") , {
+         zoom : 12 ,
+         center : new google.maps.LatLng(37.5643135 , 127.0016985),
+         disableDefaultUI : true ,
+         zoomControl : false ,
+         gestureHandling : 'greedy' ,
+    }) ;
+    getData() ;
+    initPopup() ;
 }
 
-/* AJAX 통신으로 데이터 수신 */
-
+/* ------------------------------------------
+        AJAX 통신으로 데이터 수신
+------------------------------------------- */
+/* Zerowate */
 function getData() {
     $('.button').click(function() {
         var button_id = $(this).attr('id') ;
@@ -35,9 +50,9 @@ function getData() {
                     $.each(zerowaste_list, function(key, value) {
                         zerowastePlaces.push(value)
                     });
-                    console.log(zerowastePlaces)
-                    alert('success')
+                    console.log(zerowastePlaces) ;
                     drawMarkers(zerowastePlaces) ;
+                    makeInfowindow(zerowastePlaces) ;
                     zerowastePlaces = [] ;
                 } ,
                 error : function(request , status , error) {
@@ -46,6 +61,7 @@ function getData() {
                 alert('error - '+error)
                 }
             });
+            break ;
 
             case 'ZEROWASTE_ALL' :
             $.ajax({
@@ -57,9 +73,9 @@ function getData() {
                     $.each(zerowaste_list, function(key, value) {
                         zerowastePlaces.push(value)
                     });
-                    console.log(zerowastePlaces)
-                    alert('success')
+                    console.log(zerowastePlaces) ;
                     drawMarkers(zerowastePlaces) ;
+                    makeInfowindow(zerowastePlaces) ;
                     zerowastePlaces = [] ;
                 } ,
                 error : function(request , status , error) {
@@ -68,6 +84,7 @@ function getData() {
                 alert('error - '+error)
                 }
             });
+            break ;
 
             case 'REFILL_SHOP' :
             $.ajax({
@@ -79,9 +96,9 @@ function getData() {
                     $.each(zerowaste_list, function(key, value) {
                         zerowastePlaces.push(value)
                     });
-                    console.log(zerowastePlaces)
-                    alert('success')
+                    console.log(zerowastePlaces) ;
                     drawMarkers(zerowastePlaces) ;
+                    makeInfowindow(zerowastePlaces) ;
                     zerowastePlaces = [] ;
                 } ,
                 error : function(request , status , error) {
@@ -101,9 +118,9 @@ function getData() {
                     $.each(zerowaste_list, function(key, value) {
                         zerowastePlaces.push(value)
                     });
-                    console.log(zerowastePlaces)
-                    alert('success')
+                    console.log(zerowastePlaces) ;
                     drawMarkers(zerowastePlaces) ;
+                    makeInfowindow(zerowastePlaces) ;
                     zerowastePlaces = [] ;
                 } ,
                 error : function(request , status , error) {
@@ -123,9 +140,9 @@ function getData() {
                     $.each(zerowaste_list, function(key, value) {
                         zerowastePlaces.push(value)
                     });
-                    console.log(zerowastePlaces)
-                    alert('success')
+                    console.log(zerowastePlaces) ;
                     drawMarkers(zerowastePlaces) ;
+                    makeInfowindow(zerowastePlaces) ;
                     zerowastePlaces = [] ;
                 } ,
                 error : function(request , status , error) {
@@ -138,10 +155,7 @@ function getData() {
     }) ;
 }
 
-
-
-
-
+/* Vegan */
 function getData() {
      $('.button').click(function() {
           var button_id = $(this).attr('id') ;
@@ -334,16 +348,11 @@ function getData() {
      });
 }
 
-
-
-
-
-
-
-
-
-/* Marker 생성 */
+/* -------------------------------
+                Marker 생성
+--------------------------------- */
 var markers = [] ;
+/* list 초기화 */
 function clearMarkers() {
      for(var i = 0 ; i < markers.length ; i++) {
           markers[i].setMap(null);
@@ -351,55 +360,169 @@ function clearMarkers() {
      markers = [] ;
 }
 
+let infowindow_contents = [] ;
+/* 마커 뿌리기 */
 function drawMarkers(zerowastePlaces) {
-<!--     var myIcon = new google.maps.MarkerImage("../zerowaste.png") ;-->
-     for(var i = 0 ; i < zerowastePlaces.length ; i++) {
-          var marker = new google.maps.Marker ({
-               map : map ,
-               position : new google.maps.LatLng(zerowastePlaces[i].lat , zerowastePlaces[i].lng) ,
-<!--               icon : myIcon-->
-          });
-          marker.name = zerowastePlaces[i].name ;
-          marker.number = zerowastePlaces[i].number ;
-          marker.address = zerowastePlaces[i].address ;
-          marker.category = zerowastePlaces[i].category ;
-          marker.about = zerowastePlaces[i].about ;
+    infowindow_contents = [] ;
 
-          markers.push(marker) ;
-     }
+    console.log("makePlaceMarker : " + zerowastePlaces.length) ;
+    var myIcon = {
+        url : "{% static '/resources/theme/images/zerowaste.png' %}" ,
+        size : new google.maps.Size(40 , 40) ,
+        origin : new google.maps.Point(0 , 0) ,
+        anchor : new google.maps.Point(20 , 40) ,
+        scaledSize : new google.maps.Size(40 , 40) ,
+    } ;
 
-     for(var j = 0 ; j < markers.length ; j++) {
-          google.maps.event.addListener(markers[j] , 'click' , function() {
-               map.setCenter(this.getPosition()) ;
-               map.setZoom(17) ;
+    for(var i = 0 ; i < zerowastePlaces.length ; i++) {
 
-               var contentString = "<div><div id='name'>" + marker.name +
-                                                  "</div><br>Tel. " + marker.number +
-                                                  "<br>Addr. " + marker.address +
-                                                  "<br>Cat. " + marker.category +
-                                                  "<br>About. " + marker.about + "</div>"
+        /* marker 생성 */
+        var marker = new google.maps.Marker({
+            map : map ,
+            icon : myIcon ,
+            title : zerowastePlaces[i].name ,
+            position : new google.maps.LatLng(zerowastePlaces[i].lat , zerowastePlaces[i].lng) ,
+        }) ;
 
-               var infowindow = new google.maps.InfoWindow({
-                    content : contentString ,
-               });
-               infowindow.open(map , this) ;
-          });
+        marker.name = zerowastePlaces[i].name ;
+        marker.number = zerowastePlaces[i].number ;
+        marker.address = zerowastePlaces[i].address ;
+        marker.category = zerowastePlaces[i].category ;
+        marker.about = zerowastePlaces[i].about ;
 
-          closeInfoWindow = function() {
-               infowindow.close() ;
-          }
+        markers.push(marker) ;
+        makeInfowindow(marker) ;
+        console.log('markers : ' + marker) ;
+    }
 
-//          google.maps.event.addListener(marker[j] , 'click' , closeInfoWindow) ;
-//          google.maps.event.addListener(infowindow , 'closeclick' , function() {
-//               zoom : 12 ,
-//          }) ;
-     }
-
-     alert('marker push') ;
+    showInfowindow(markers) ;
+    alert('showinfowindow marker complete') ;
 }
 
+/* info창 */
+function makeInfowindow(zerowastePlaces) {
+    const temp_content =
+    "<div id = 'infoTitle' class = 'info_title'><div class='place_name'>" +
+    zerowastePlaces.name +
+   "</div></div><div class='info_rest'>" +
+    zerowastePlaces.address +
+    "</div>";
+
+    console.log(temp_content) ;
+    infowindow_contents.push(temp_content) ;
+}
+
+/* marker 클릭 시 popup */
+function showInfowindow(markers) {
+    for(let i = 0 ; i < markers.length ; i++ ) {
+        google.maps.event.addListener(markers[i] , "click" , async function() {
+            alert('marker click') ;
+            if(infowindow_contents[i]) {
+                await removePopup() ;
+                await createPopup(markers[i].position , infowindow_contents[i]) ;
+
+                /* 상세보기 */
+                const moreDetail = document.getElementById("moreDetail") ;
+                if( moreDetail ) {
+                    moreDetail.addEventListener("click" , function() {
+                        console.log("click") ;
+                        showPlaceDetail(markers[i].title) ;
+                    }) ;
+                }
+                console.log("marker : " + markers[i].title) ;
+            }
+        }) ;
+    }
+}
+
+let Popup , popup ;
+/* google 지도 로드될 때 실행되는 initAutocomplete() 에서 호출 */
+export function initPopup() {
+    Popup = createPopupClass() ;
+}
+
+/* 마커 클릭시 호출 */
+export function createPopup(position , content) {
+    popup = new Popup(position , content) ;
+    alert("click") ;
+    alert(position) ;
+    alert(content) ;
+    popup.setMap(map) ;
+
+    map.addListener("click" , function() {
+        removePopup() ;
+        initMarker() ;
+    }) ;
+}
+
+/* 마커 클릭시 이전 팝업창 삭제 */
+export function removePopup() {
+    if (popup != undefined) {
+        popup.setMap(null) ;
+    }
+}
+
+/* ----------------------------------
+            Customized Popup
+------------------------------------ */
+/* custom popup 생성을 위한 클래스 */
+/* https://after-newmoon.tistory.com/52?category=864821 */
 function createPopupClass() {
     function Popup(position , content) {
         this.position = position ;
+
+        this.contentNode = document.createElement("div") ;
+        this.contentNode.className = "popup_wrap" ;
+
+        const popupInfo = document.createElement("div") ;
+        popupInfo.className = "popup" ;
+        this.contentNode.appendChild(popupInfo) ;
+        popupInfo.innerHTML = content ;
+
+        const popupAnchor = document.createElement("div") ;
+        popupAnchor.className = "popup-anchor" ;
+        this.contentNode.appendChild(popupAnchor) ;
+
+        google.maps.OverlayView.preventMapHitsAndGesturesFrom(this.contentNode) ;
     }
+
+    Popup.prototype = Object.create(google.maps.OverlayView.prototype) ;
+
+    Popup.prototype.onAdd = function() {
+        this.getPanes().floatPane.appendChild(this.contentNode) ;
+    } ;
+
+    Popup.prototype.onRemove = function() {
+        if (this.contentNode.parentElement) {
+            this.contentNode.parentElement.removeChild(this.contentNode) ;
+        }
+    } ;
+
+    Popup.prototype.draw = function() {
+        var divPosition = this.getProjection().fromLatLngToDivPixel(this.position) ;
+
+        var display = Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ? " block" : "none" ;
+        if (display === "block") {
+            this.contentNode.style.left = divPosition.x + "px" ;
+            this.contentNode.style.top = divPosition.y - 20 + "px" ;
+        }
+
+        if(this.contentNode.style.display !== display) {
+            this.contentNode.style.display = display ;
+        }
+    } ;
+
+    return Popup ;
+}
+
+let placeInfo = [] ;
+/* place detail */
+export async function getPlaceDetail(temp_places) {
+    let temp_placeInfo = [] ;
+
+    await temp_places.forEach(function (temp_place) {
+        const request = {
+            placeId : temp
+        }
+    })
 }
