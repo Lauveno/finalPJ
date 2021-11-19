@@ -12,14 +12,15 @@ from django.contrib import auth
 
 # Create your views here.
 
-# wwg_place_df = pd.read_csv('wwg_place.csv' , encoding='UTF-8')
-# wwg_place_df = wwg_place_df.replace(np.NaN , 0)
-
-zerowaste_df = pd.read_csv('zerowaste_fin_utf8.txt', encoding='UTF-8')
+z_path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/db/Zerowaste.csv'
+zerowaste_df = pd.read_csv(z_path , encoding='UTF-8')
 zerowaste_df = zerowaste_df.replace(np.NaN , 0)
 
-vegan_df = pd.read_csv('veganfood_fin.csv', encoding='UTF-8')
+v_path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/db/Veganfood.csv'
+vegan_df = pd.read_csv(v_path , encoding='UTF-8')
 vegan_df = vegan_df.replace(np.NaN , 0)
+vegan_df.rename(columns={'설명(판매메뉴)': '설명'} , inplace= True)
+vegan_df.rename(columns={'위도 ': '위도'} , inplace= True)
 
 # About page - main page
 #[TEST] 로그인 할경우 UserID 뽑아보기
@@ -27,20 +28,106 @@ def about(request) :
     print('mapApp about index ~ ')
     myuser = request.session.get('user')
     if myuser:
-        user = WwgUser.objects.get(user_id=myuser)
+        # user = WwgUser.objects.get(user_id=myuser)
+        user = myuser
         return render(request, 'map/about.html', {'user_id': user})
     return render(request, 'map/about.html')
 
 
 # Map page - 완료
 # main map
-def map(request) :
+from ast import literal_eval
+def map(request):
     print('mapApp map index ~ ')
     myuser = request.session.get('user')
     if myuser:
-        user = WwgUser.objects.get(user_id=myuser)
-        return render(request, 'map/map.html', {'user_id': user})
-    return render(request , 'map/map.html')
+        user = myuser
+        recomm = WwgUserRecomm.objects.filter(user_id=user).values()
+        v_recomm = [];
+        z_recomm = [];
+        top_recomm = [];
+        top_score = []
+        # Vegan Recommand list
+        print('Vegan Recommand list')
+        print(literal_eval(recomm[0]['vegan_recomm']).keys());
+        for place in literal_eval(recomm[0]['vegan_recomm']).keys():
+            row = WwgVegan.objects.filter(index=place).values()
+            print(place, ':', row[0]['name'], round(row[0]['WWGScore'], 2))
+            # row[0]['WWGScore'] = round(row[0]['WWGScore'],2)
+            v_recomm.append(row[0])
+        # Zero Recommand list
+        print('Zerowaste Recommand list')
+        print(literal_eval(recomm[0]['zerowaste_recomm']).keys());
+        for place in literal_eval(recomm[0]['zerowaste_recomm']).keys():
+            row = WwgZerowaste.objects.filter(index=place).values()
+            print(place, ':', row[0]['name'], round(row[0]['WWGScore'], 2))
+            # row[0]['WWGScore'] = round(row[0]['WWGScore'],2)
+            # print(row[0]['WWGScore'])
+            z_recomm.append(row[0])
+        # ---TopPlace
+        print('TopPlace list')
+        Toprecomm = TopPlace.objects.all().values()
+        print(literal_eval(Toprecomm[0]['TopVegan'])[0].keys());
+        print(literal_eval(Toprecomm[0]['TopZerowaste'])[0].keys());
+        for place in literal_eval(Toprecomm[0]['TopVegan'])[0].keys():
+            row = WwgVegan.objects.filter(index=place).values()
+            print(place, ':', row[0]['name'], round(row[0]['WWGScore'], 2))
+            # row[0]['WWGScore'] = round(row[0]['WWGScore'],2)
+            # print(row[0]['WWGScore'])
+            top_recomm.append(row[0])
+        for place in literal_eval(Toprecomm[0]['TopZerowaste'])[0].keys():
+            row = WwgZerowaste.objects.filter(index=place).values()
+            print(place, ':', row[0]['name'], round(row[0]['WWGScore'], 2))
+            # row[0]['WWGScore'] = round(row[0]['WWGScore'],2)
+            # print(row[0]['WWGScore'])
+            top_recomm.append(row[0])
+        for score in literal_eval(Toprecomm[0]['TopVegan'])[0].values():
+            top_score.append(round(score, 2))
+        for score in literal_eval(Toprecomm[0]['TopZerowaste'])[0].values():
+            top_score.append(round(score, 2))
+
+        return render(request, 'map/map_loginmain.html', {'user_id': user,
+                                                          'v_recomm_0': v_recomm[0], 'v_recomm_1': v_recomm[1],
+                                                          'v_recomm_2': v_recomm[2],
+                                                          'z_recomm_0': z_recomm[0], 'z_recomm_1': z_recomm[1],
+                                                          'z_recomm_2': z_recomm[2],
+                                                          'top_recomm_0': top_recomm[0], 'top_recomm_1': top_recomm[1],
+                                                          'top_recomm_2': top_recomm[2],
+                                                          'top_recomm_3': top_recomm[3], 'top_recomm_4': top_recomm[4],
+                                                          'top_recomm_5': top_recomm[5],
+                                                          'top_score_0': top_score[0], 'top_score_1': top_score[1],
+                                                          'top_score_2': top_score[2],
+                                                          'top_score_3': top_score[3], 'top_score_4': top_score[4],
+                                                          'top_score_5': top_score[5], })
+    else:
+        top_recomm = [];
+        top_score = []
+        # ---TopPlace
+        print('TopPlace list')
+        Toprecomm = TopPlace.objects.all().values()
+        print(literal_eval(Toprecomm[0]['TopVegan'])[0].keys());
+        print(literal_eval(Toprecomm[0]['TopZerowaste'])[0].keys());
+        for place in literal_eval(Toprecomm[0]['TopVegan'])[0].keys():
+            row = WwgVegan.objects.filter(index=place).values()
+            print(place, ':', row[0]['name'], round(row[0]['WWGScore'], 2))
+            # row[0]['WWGScore'] = round(row[0]['WWGScore'],2)
+            # print(row[0]['WWGScore'])
+            top_recomm.append(row[0])
+        for place in literal_eval(Toprecomm[0]['TopZerowaste'])[0].keys():
+            row = WwgZerowaste.objects.filter(index=place).values()
+            print(place, ':', row[0]['name'], round(row[0]['WWGScore'], 2))
+            # row[0]['WWGScore'] = round(row[0]['WWGScore'],2)
+            # print(row[0]['WWGScore'])
+            top_recomm.append(row[0])
+        for score in literal_eval(Toprecomm[0]['TopVegan'])[0].values():
+            top_score.append(round(score, 2))
+        for score in literal_eval(Toprecomm[0]['TopZerowaste'])[0].values():
+            top_score.append(round(score, 2))
+        return render(request, 'map/map_main.html',
+                      {'top_recomm_0': top_recomm[0], 'top_recomm_1': top_recomm[1], 'top_recomm_2': top_recomm[2],
+                       'top_recomm_3': top_recomm[3], 'top_recomm_4': top_recomm[4], 'top_recomm_5': top_recomm[5],
+                       'top_score_0': top_score[0], 'top_score_1': top_score[1], 'top_score_2': top_score[2],
+                       'top_score_3': top_score[3], 'top_score_4': top_score[4], 'top_score_5': top_score[5], })
 
 # zerowaste map
 def map_zerowaste(request) :
@@ -62,34 +149,6 @@ def map_vegan(request) :
 
 
 # data path
-# total data -> 추천 장소 들어갈 예정
-def wwg_place_data(request) :
-    print('mapApp wwg place index ~ ')
-#     wwg_place_df.rename(columns={'설명(판매메뉴)': '설명'}, inplace=True)
-#     wwg_place_df.rename(columns={'위도 ' : '위도'}, inplace=True)
-#     print(wwg_place_df.columns)
-#
-#     wwg_placeList = []
-#     for idx in wwg_place_df.index :
-#         wwg_placeList.append({
-#             'id': (wwg_place_df.iloc[idx, :].번호).tolist(),  # numpy
-#             'name': wwg_place_df.iloc[idx, :].상호명,
-#             'number': wwg_place_df.iloc[idx, :].전화번호,
-#             'address': wwg_place_df.iloc[idx, :].소재지,
-#             'category': wwg_place_df.iloc[idx, :].업종,
-#             'about': wwg_place_df.iloc[idx, :].설명,
-#             'imgURL': wwg_place_df.iloc[idx, :].imgURl,
-#             'img': wwg_place_df.iloc[idx, :].jpg,
-#             'lat': (wwg_place_df.iloc[idx, :].위도 ).tolist(),  # numpy
-#             'lng': (wwg_place_df.iloc[idx, :].경도).tolist()  # numpy
-#         })
-#         # print(wwg_placeList[{'id' : '1' , 'name' : 'asdf'}])
-#         print('wwg_placeList complete!!')
-#         print(wwg_placeList[0])
-#
-#         return JsonResponse(wwg_placeList, safe=False)
-
-
 # zerowaste data - 완료
 # 전체
 def zerowaste_data_all(request) :
@@ -113,9 +172,34 @@ def zerowaste_data_all(request) :
 
     return JsonResponse(zerowasteList, safe=False)
 
+# 멤버쉽
+def zerowaste_membership(request) :
+    print('mapApp zerowaste membership index ~')
+    zerowaste_sample_df = zerowaste_df.sample(n=10)
+    zerowaste_membership_df = zerowaste_sample_df.reset_index()
+
+    zerowasteList = []
+    for idx in zerowaste_membership_df.index :
+        zerowasteList.append({
+            'id' : (zerowaste_membership_df.iloc[idx ,  : ].번호).tolist() , # numpy
+            'name' : zerowaste_membership_df.iloc[idx ,  : ].상호명 ,
+            'number' : zerowaste_membership_df.iloc[idx ,  : ].전화번호 ,
+            'address' : zerowaste_membership_df.iloc[idx ,  : ].소재지 ,
+            'category' : zerowaste_membership_df.iloc[idx ,  : ].업종 ,
+            'about' : zerowaste_membership_df.iloc[idx ,  : ].설명 ,
+            'imgURL' : zerowaste_membership_df.iloc[idx ,  : ].imgUrl ,
+            'img' : zerowaste_membership_df.iloc[idx ,  : ].jpg ,
+            'lat' : (zerowaste_membership_df.iloc[idx ,  : ].위도).tolist() , # numpy
+            'lng' : (zerowaste_membership_df.iloc[idx ,  : ].경도).tolist() # numpy
+        })
+    print('zerowasteList all complete!!')
+
+    return JsonResponse(zerowasteList, safe=False)
+
 # 제로웨이스트
 def zerowaste_data(request) :
     print('mapApp zerowaste index ~')
+    print(zerowaste_df.head(5))
 
     zerowasteList = []
     for idx in zerowaste_df.index :
@@ -211,19 +295,46 @@ def zerowaste_data_etc(request) :
 def vegan_data_all(request) :
     print('mapApp vegan index ~')
 
+    vegan_membership_df = vegan_df.sample(n = 10)
+    print(vegan_membership_df.head(5))
+
     veganList = []
-    for idx in vegan_df.index:
+    for idx in vegan_membership_df.index:
         veganList.append({
-            'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
-            'name': vegan_df.iloc[idx, :].상호명,
-            'number': vegan_df.iloc[idx, :].전화번호,
-            'address': vegan_df.iloc[idx, :].소재지,
-            'category': vegan_df.iloc[idx, :].업종,
-            'about': vegan_df.iloc[idx, :].설명,
-            'imgURL': vegan_df.iloc[idx, :].imgURl,
-            'img': vegan_df.iloc[idx, :].jpg,
-            'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-            'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+            'id': (vegan_membership_df.iloc[idx, :].번호).tolist(),  # numpy
+            'name': vegan_membership_df.iloc[idx, :].상호명,
+            'number': vegan_membership_df.iloc[idx, :].전화번호,
+            'address': vegan_membership_df.iloc[idx, :].소재지,
+            'category': vegan_membership_df.iloc[idx, :].업종,
+            'about': vegan_membership_df.iloc[idx, :].설명,
+            'imgURL': vegan_membership_df.iloc[idx, :].imgURl,
+            'img': vegan_membership_df.iloc[idx, :].jpg,
+            'lat': (vegan_membership_df.iloc[idx, :].위도).tolist(),  # numpy
+            'lng': (vegan_membership_df.iloc[idx, :].경도).tolist()  # numpy
+        })
+    print('veganList all complete!!')
+
+    return JsonResponse(veganList, safe=False)
+
+# 멤버쉽
+def vegan_membership(request) :
+    print('mapApp vegan index ~')
+    vegan_sample_df = vegan_df.sample(n=10)
+    vegan_membership_df = vegan_sample_df.reset_index()
+
+    veganList = []
+    for idx in vegan_membership_df.index:
+        veganList.append({
+            'id': (vegan_membership_df.iloc[idx, :].번호).tolist(),  # numpy
+            'name': vegan_membership_df.iloc[idx, :].상호명,
+            'number': vegan_membership_df.iloc[idx, :].전화번호,
+            'address': vegan_membership_df.iloc[idx, :].소재지,
+            'category': vegan_membership_df.iloc[idx, :].업종,
+            'about': vegan_membership_df.iloc[idx, :].설명,
+            'imgURL': vegan_membership_df.iloc[idx, :].imgURl,
+            'img': vegan_membership_df.iloc[idx, :].jpg,
+            'lat': (vegan_membership_df.iloc[idx, :].위도).tolist(),  # numpy
+            'lng': (vegan_membership_df.iloc[idx, :].경도).tolist()  # numpy
         })
     print('veganList all complete!!')
 
@@ -235,7 +346,7 @@ def vegan_data_kor(request) :
 
     veganList = []
     for idx in vegan_df.index:
-        if vegan_df.iloc[idx , 7] == '한식' :
+        if vegan_df.iloc[idx , 4] == '한식' :
             veganList.append({
                 'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
                 'name': vegan_df.iloc[idx, :].상호명,
@@ -258,7 +369,7 @@ def vegan_data_wes(request) :
 
     veganList = []
     for idx in vegan_df.index:
-        if vegan_df.iloc[idx, 7] == '양식':
+        if vegan_df.iloc[idx, 4] == '양식':
             veganList.append({
                 'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
                 'name': vegan_df.iloc[idx, :].상호명,
@@ -281,7 +392,7 @@ def vegan_data_chi(request) :
 
     veganList = []
     for idx in vegan_df.index:
-        if vegan_df.iloc[idx, 7] == '중식':
+        if vegan_df.iloc[idx, 4] == '중식':
             veganList.append({
                 'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
                 'name': vegan_df.iloc[idx, :].상호명,
@@ -304,7 +415,7 @@ def vegan_data_jap(request) :
 
     veganList = []
     for idx in vegan_df.index:
-        if vegan_df.iloc[idx, 7] == '일식':
+        if vegan_df.iloc[idx, 4] == '일식':
             veganList.append({
                 'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
                 'name': vegan_df.iloc[idx, :].상호명,
@@ -327,7 +438,7 @@ def vegan_data_cafe(request) :
 
     veganList = []
     for idx in vegan_df.index:
-        if vegan_df.iloc[idx, 7] == '카페':
+        if vegan_df.iloc[idx, 4] == '카페':
             veganList.append({
                 'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
                 'name': vegan_df.iloc[idx, :].상호명,
@@ -350,7 +461,7 @@ def vegan_data_bake(request) :
 
     veganList = []
     for idx in vegan_df.index:
-        if vegan_df.iloc[idx, 7] == '베이커리':
+        if vegan_df.iloc[idx, 4] == '베이커리':
             veganList.append({
                 'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
                 'name': vegan_df.iloc[idx, :].상호명,
@@ -373,7 +484,7 @@ def vegan_data_etc(request) :
 
     veganList = []
     for idx in vegan_df.index:
-        if vegan_df.iloc[idx, 7] == '분식' or vegan_df.iloc[idx , 7] == '술집' or vegan_df.iloc[idx , 7] == '뷔페식' or vegan_df.iloc[idx , 7] == '기타' :
+        if vegan_df.iloc[idx, 4] == '분식' or vegan_df.iloc[idx , 4] == '술집' or vegan_df.iloc[idx , 4] == '뷔페식' or vegan_df.iloc[idx , 4] == '기타' :
             veganList.append({
                 'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
                 'name': vegan_df.iloc[idx, :].상호명,
@@ -393,26 +504,27 @@ def vegan_data_etc(request) :
 
 # Login page
 # 로그인
-def login(request):
-    response_data = {}
-    if request.method == 'POST':
-        login_username = request.POST.get('user_id', None)
-        login_password = request.POST.get('user_pwd', None)
+def login(request) :
+    response_data={}
+    if request.method == 'POST' :
+        login_username=request.POST.get('user_id',None)
+        login_password=request.POST.get('user_pwd',None)
         if not (login_username and login_password):
-            response_data['error'] = "아이디와 비밀번호를 모두 입력해주세요."
-        else:
+            response_data['error']="아이디와 비밀번호를 모두 입력해주세요."
+        else :
             myuser = WwgUser.objects.get(user_id=login_username)
-            # db에서 꺼내는 명령. Post로 받아온 username으로 , db의 username을 꺼내온다.
-            if check_password(login_password, myuser.user_pwd):
+            #db에서 꺼내는 명령. Post로 받아온 username으로 , db의 username을 꺼내온다.
+            # if check_password(login_password, myuser.user_pwd):
+            if (login_password == myuser.user_pwd):
                 request.session['user'] = myuser.user_id
-                print(request.session['user'], '~~~~~~~~~~~')
-                # 세션도 딕셔너리 변수 사용과 똑같이 사용하면 된다.
-                # 세션 user라는 key에 방금 로그인한 id를 저장한것.
+                print(request.session['user'],'~~~~~~~~~~~')
+                #세션도 딕셔너리 변수 사용과 똑같이 사용하면 된다.
+                #세션 user라는 key에 방금 로그인한 id를 저장한것.
                 return redirect('main')
             else:
                 response_data['error'] = "비밀번호를 틀렸습니다."
-                return render(request, 'map/login.html', response_data)
-    return render(request, 'map/login.html')
+                return render(request, 'map/login.html',response_data)
+    return render(request , 'map/login.html')
 
 # 로그아웃
 def logout(request) :
@@ -445,8 +557,25 @@ def registerForm(request):
 
 # csv to model
 def CsvToModel(request):
-    # Zerowaste Shop loading
-    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/zerowaste_fin_utf8.txt'
+    # [WwgUser]
+    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/db/WwgUsers.csv'
+    file = open(path, encoding='utf-8')
+    reader = csv.reader(file)
+    print('----', reader)
+    z_list = [];
+    idx = 0
+    for row in reader:
+        if idx != 0:
+            z_list.append(WwgUser(
+                user_id=row[0],
+                user_pwd=row[1],
+                user_birthyear=row[2],
+            ))
+        idx += 1
+    WwgUser.objects.bulk_create(z_list)
+
+    # [Zerowaste Shop]
+    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/db/Zerowaste.csv'
     file = open(path, encoding='utf-8')
     reader = csv.reader(file)
     print('----', reader)
@@ -465,13 +594,17 @@ def CsvToModel(request):
                 img=row[7],
                 lat=float(row[8]),
                 lng=float(row[9]),
+                rating=float(row[10]),
+                review1=row[11],
+                review2=row[12],
+                WWGScore=float(row[13]),
+                Recomm=row[14],
             ))
         idx += 1
-    # print(z_list)
     WwgZerowaste.objects.bulk_create(z_list)
 
-    # Vegan Food Shop loading
-    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/vegan_fin_utf8.txt'
+    # [Vegan Food Shop]
+    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/db/Veganfood.csv'
     file = open(path, encoding='utf-8')
     reader = csv.reader(file)
     print('----', reader)
@@ -490,10 +623,50 @@ def CsvToModel(request):
                 img=row[7],
                 lat=float(row[8]),
                 lng=float(row[9]),
+                rating=float(row[10]),
+                review1=row[11],
+                review2=row[12],
+                WWGScore=float(row[13]),
+                Recomm=row[14],
             ))
         idx += 1
-    # print(z_list)
     WwgVegan.objects.bulk_create(z_list)
+
+    # [TopPlace]
+    print('Create TopPlace model')
+    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/db/TopPlace.csv'
+    file = open(path, encoding='utf-8')
+    reader = csv.reader(file)
+    print('----', reader)
+    z_list = [];
+    idx = 0
+    for row in reader:
+        if idx != 0:
+            z_list.append(TopPlace(
+                TopVegan=row[0],
+                TopZerowaste=row[1],
+                Date=row[2],
+            ))
+        idx += 1
+    TopPlace.objects.bulk_create(z_list)
+
+    # [WwgUsersRecomm]
+    print('Create WwgUsersRecomm model')
+    path = 'C:/Users/loadt/PycharmProjects/pythonProject1/rootWEB/db/WwgUsersRecomm.csv'
+    file = open(path, encoding='utf-8')
+    reader = csv.reader(file)
+    print('----', reader)
+    z_list = [];
+    idx = 0
+    for row in reader:
+        if idx != 0:
+            z_list.append(WwgUserRecomm(
+                user_id=row[0],
+                vegan_recomm=row[1],
+                zerowaste_recomm=row[2],
+            ))
+        idx += 1
+    WwgUserRecomm.objects.bulk_create(z_list)
     return HttpResponse('create model~~~~~~')
 
 

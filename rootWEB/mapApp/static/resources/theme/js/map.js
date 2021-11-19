@@ -375,8 +375,23 @@ function drawMarkers(zerowastePlaces) {
     } ;
 
     for(var i = 0 ; i < zerowastePlaces.length ; i++) {
-
-        /* marker 생성 */
+//        geocoder.geocode({'address' : zerowastePlaces[i].address} ,function(results , status) {
+//            if(status == google.maps.GeocoderStatus.OK) {
+//                var lat = results[i].geometry.location.lat() ;
+//                var lng = results[i].geometry.location.lng() ;
+//                map.setCenter(results[i].geometry.location) ;
+//
+//                var marker = new google.maps.Marker({
+//                    map : map ,
+//                    icon : myIcon ,
+//                    title : zerowastePlaces[i].name ,
+//                    position : results[i].geometry.location ,
+//                }) ;
+//            } else {
+//                alert("error : " + status) ;
+//            }
+//        }) ;
+       /* marker 생성 */
         var marker = new google.maps.Marker({
             map : map ,
             icon : myIcon ,
@@ -404,7 +419,8 @@ function makeInfowindow(zerowastePlaces) {
     const temp_content =
     "<div id = 'infoTitle' class = 'info_title'><div class='place_name'>" +
     zerowastePlaces.name +
-   "</div></div><div class='info_rest'>" +
+   "</div><div class='more_detail' onclick='showPlaceDetail(\"" +
+    zerowastePlaces.name + "\");'>&#62;</div></div><div class='info_rest'>" +
     zerowastePlaces.address +
     "</div>";
 
@@ -445,8 +461,6 @@ export function initPopup() {
 export function createPopup(position , content) {
     popup = new Popup(position , content) ;
     alert("click") ;
-    alert(position) ;
-    alert(content) ;
     popup.setMap(map) ;
 
     map.addListener("click" , function() {
@@ -474,12 +488,12 @@ function createPopupClass() {
         this.contentNode = document.createElement("div") ;
         this.contentNode.className = "popup_wrap" ;
 
-        const popupInfo = document.createElement("div") ;
+        var popupInfo = document.createElement("div") ;
         popupInfo.className = "popup" ;
         this.contentNode.appendChild(popupInfo) ;
         popupInfo.innerHTML = content ;
 
-        const popupAnchor = document.createElement("div") ;
+        var popupAnchor = document.createElement("div") ;
         popupAnchor.className = "popup-anchor" ;
         this.contentNode.appendChild(popupAnchor) ;
 
@@ -488,20 +502,26 @@ function createPopupClass() {
 
     Popup.prototype = Object.create(google.maps.OverlayView.prototype) ;
 
+    /* popup이 지도에 추가될 때 호출 */
     Popup.prototype.onAdd = function() {
         this.getPanes().floatPane.appendChild(this.contentNode) ;
     } ;
 
+    /* popup이 지도에 삭제될 때 호출 */
     Popup.prototype.onRemove = function() {
         if (this.contentNode.parentElement) {
             this.contentNode.parentElement.removeChild(this.contentNode) ;
         }
     } ;
 
+    /* popup을 그릴 때 호출 */
     Popup.prototype.draw = function() {
         var divPosition = this.getProjection().fromLatLngToDivPixel(this.position) ;
+        /* 시야에서 멀어질 경우 popup hide */
+        var display = Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ?
+        " block" :
+        "none" ;
 
-        var display = Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ? " block" : "none" ;
         if (display === "block") {
             this.contentNode.style.left = divPosition.x + "px" ;
             this.contentNode.style.top = divPosition.y - 20 + "px" ;
@@ -517,12 +537,65 @@ function createPopupClass() {
 
 let placeInfo = [] ;
 /* place detail */
-export async function getPlaceDetail(temp_places) {
+async function getPlaceDetail(temp_places) {
     let temp_placeInfo = [] ;
 
     await temp_places.forEach(function (temp_place) {
         const request = {
-            placeId : temp
-        }
-    })
+            placeId : temp_place.place_id ,
+            fields : [
+            "name" ,
+            "formatted_address" ,
+            "formatted_phone_number" ,
+            "formatted_category" ,
+            "formatted_about" ,
+            ] ,
+        } ;
+
+        service.getDetails(request , function(place , status) {
+            if(status === google.maps.places.PlacesServiceStatus.OK) {
+                placeInfo.push(place) ;
+            } else {
+                console.log(status) ;
+                temp_placeInfo.push(temp_place) ;
+            }
+        }) ;
+    }) ;
+
+    if(temp_placeInfo.length != 0) {
+        console.log("try again") ;
+        setTimeout(getPlaceDetail , 2000 , temp_placeInfo) ;
+        temp_placeInfo = [] ;
+    }
 }
+
+function hidePlaceDetail() {
+    detailBlock.classList.add("blind") ;
+}
+
+window.showPlaceDetail = function(clicked_place_name) {
+    removePopup() ;
+
+    placeInfo.forEach(async function(place) {
+        if(clicked_place_name == place.name) {
+            if(detailBlock.classList.contains("blind")) {
+                detailBlock.classList.remove("blind") ;
+            }
+
+            document.getElementById("name").innerHTML =
+            "<h1>" + place.name + "</h1>" ;
+
+            document.getElementById("address").innerHTML = place.formatted_address ;
+            document.getElementById("number").innerHTML = place.formatted_phone_number ;
+            document.getElementById('category').innerHTML = place.formatted_category ;
+            document.getElementById('about').innerHTML = place.formatted_about ;
+        }
+    }) ;
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click" , function() {
+            detailBlock.classList.add("blind") ;
+            initMarker() ;
+        }) ;
+    }
+} ;

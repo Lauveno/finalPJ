@@ -12,11 +12,9 @@ urlpatterns = [
     path('map_zerowaste/' , views.map_zerowaste , name = "map_zerowaste") ,
     path('map_vegan/' , views.map_vegan , name = "map_vegan") ,
 
-    # data
-    path('wwg_place_data/' , views.wwg_place_data , name="wwg_place_data") ,
-
     # zerowaste_data
     path('zerowaste_data_all/' , views.zerowaste_data_all , name="zerowaste_data_all") ,
+    path('zerowaste_membership/' , views.zerowaste_membership , name="zerowaste_membership") ,
     path('zerowaste_data/' , views.zerowaste_data , name = "zerowaste_data") ,
     path('zerowaste_data_refill/' , views.zerowaste_data_refill , name="zerowaste_data_refill") ,
     path('zerowaste_data_recycle/' , views.zerowaste_data_recycle , name="zerowaste_data_recycle") ,
@@ -24,6 +22,7 @@ urlpatterns = [
 
     # vegan_data
     path('vegan_data_all/' , views.vegan_data_all , name = "vegan_data_all" ) ,
+    path('vegan_membership/' , views.vegan_membership , name="vegan_membership") ,
     path('vegan_data_kor/' , views.vegan_data_kor , name="vegan_data_kor") ,
     path('vegan_data_wes/' , views.vegan_data_wes , name="vegan_data_wes") ,
     path('vegan_data_chi/' , views.vegan_data_chi , name="vegan_data_chi") ,
