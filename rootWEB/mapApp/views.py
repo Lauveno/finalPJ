@@ -166,7 +166,9 @@ def zerowaste_data_all(request) :
             'imgURL' : zerowaste_df.iloc[idx ,  : ].imgUrl ,
             'img' : zerowaste_df.iloc[idx ,  : ].jpg ,
             'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
-            'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
+            'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() , # numpy
+            'WWGScore' : (zerowaste_df.iloc[idx , : ].WWGScore).tolist() , # numpy
+            'recomm' : zerowaste_df.iloc[idx , : ].추천장소 ,
         })
     print('zerowasteList all complete!!')
 
@@ -190,7 +192,9 @@ def zerowaste_membership(request) :
             'imgURL' : zerowaste_membership_df.iloc[idx ,  : ].imgUrl ,
             'img' : zerowaste_membership_df.iloc[idx ,  : ].jpg ,
             'lat' : (zerowaste_membership_df.iloc[idx ,  : ].위도).tolist() , # numpy
-            'lng' : (zerowaste_membership_df.iloc[idx ,  : ].경도).tolist() # numpy
+            'lng' : (zerowaste_membership_df.iloc[idx ,  : ].경도).tolist() , # numpy
+            'WWGScore': (zerowaste_membership_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+            'recomm': zerowaste_membership_df.iloc[idx, :].추천장소,
         })
     print('zerowasteList all complete!!')
 
@@ -214,7 +218,9 @@ def zerowaste_data(request) :
                 'imgURL' : zerowaste_df.iloc[idx ,  : ].imgUrl ,
                 'img' : zerowaste_df.iloc[idx ,  : ].jpg ,
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
-                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
+                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() , # numpy
+                'WWGScore': (zerowaste_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': zerowaste_df.iloc[idx, :].추천장소,
             })
     print('zerowasteList complete!!')
 
@@ -237,7 +243,9 @@ def zerowaste_data_refill(request) :
                 'imgURL' : zerowaste_df.iloc[idx ,  : ].imgUrl ,
                 'img' : zerowaste_df.iloc[idx ,  : ].jpg ,
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
-                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
+                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() , # numpy
+                'WWGScore': (zerowaste_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': zerowaste_df.iloc[idx, :].추천장소,
             })
     print('zerowasteList refill complete!!')
 
@@ -260,7 +268,9 @@ def zerowaste_data_recycle(request) :
                 'imgURL' : zerowaste_df.iloc[idx ,  : ].imgUrl ,
                 'img' : zerowaste_df.iloc[idx ,  : ].jpg ,
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
-                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
+                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() , # numpy
+                'WWGScore': (zerowaste_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': zerowaste_df.iloc[idx, :].추천장소,
             })
     print('zerowasteList recycle complete!!')
 
@@ -283,7 +293,9 @@ def zerowaste_data_etc(request) :
                 'imgURL' : zerowaste_df.iloc[idx ,  : ].imgUrl ,
                 'img' : zerowaste_df.iloc[idx ,  : ].jpg ,
                 'lat' : (zerowaste_df.iloc[idx ,  : ].위도).tolist() , # numpy
-                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() # numpy
+                'lng' : (zerowaste_df.iloc[idx ,  : ].경도).tolist() , # numpy
+                'WWGScore': (zerowaste_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': zerowaste_df.iloc[idx, :].추천장소,
             })
     print('zerowasteList etc complete!!')
 
@@ -295,22 +307,21 @@ def zerowaste_data_etc(request) :
 def vegan_data_all(request) :
     print('mapApp vegan index ~')
 
-    vegan_membership_df = vegan_df.sample(n = 10)
-    print(vegan_membership_df.head(5))
-
     veganList = []
-    for idx in vegan_membership_df.index:
+    for idx in vegan_df.index:
         veganList.append({
-            'id': (vegan_membership_df.iloc[idx, :].번호).tolist(),  # numpy
-            'name': vegan_membership_df.iloc[idx, :].상호명,
-            'number': vegan_membership_df.iloc[idx, :].전화번호,
-            'address': vegan_membership_df.iloc[idx, :].소재지,
-            'category': vegan_membership_df.iloc[idx, :].업종,
-            'about': vegan_membership_df.iloc[idx, :].설명,
-            'imgURL': vegan_membership_df.iloc[idx, :].imgURl,
-            'img': vegan_membership_df.iloc[idx, :].jpg,
-            'lat': (vegan_membership_df.iloc[idx, :].위도).tolist(),  # numpy
-            'lng': (vegan_membership_df.iloc[idx, :].경도).tolist()  # numpy
+            'id': (vegan_df.iloc[idx, :].번호).tolist(),  # numpy
+            'name': vegan_df.iloc[idx, :].상호명,
+            'number': vegan_df.iloc[idx, :].전화번호,
+            'address': vegan_df.iloc[idx, :].소재지,
+            'category': vegan_df.iloc[idx, :].업종,
+            'about': vegan_df.iloc[idx, :].설명,
+            'imgURL': vegan_df.iloc[idx, :].imgURl,
+            'img': vegan_df.iloc[idx, :].jpg,
+            'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
+            'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+            'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+            'recomm': vegan_df.iloc[idx, :].추천장소,
         })
     print('veganList all complete!!')
 
@@ -334,7 +345,9 @@ def vegan_membership(request) :
             'imgURL': vegan_membership_df.iloc[idx, :].imgURl,
             'img': vegan_membership_df.iloc[idx, :].jpg,
             'lat': (vegan_membership_df.iloc[idx, :].위도).tolist(),  # numpy
-            'lng': (vegan_membership_df.iloc[idx, :].경도).tolist()  # numpy
+            'lng': (vegan_membership_df.iloc[idx, :].경도).tolist(),  # numpy
+            'WWGScore': (vegan_membership_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+            'recomm': vegan_membership_df.iloc[idx, :].추천장소,
         })
     print('veganList all complete!!')
 
@@ -357,7 +370,9 @@ def vegan_data_kor(request) :
                 'imgURL': vegan_df.iloc[idx, :].imgURl,
                 'img': vegan_df.iloc[idx, :].jpg,
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-                'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+                'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+                'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': vegan_df.iloc[idx, :].추천장소,
             })
     print('veganList all complete!!')
 
@@ -380,7 +395,9 @@ def vegan_data_wes(request) :
                 'imgURL': vegan_df.iloc[idx, :].imgURl,
                 'img': vegan_df.iloc[idx, :].jpg,
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-                'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+                'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+                'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': vegan_df.iloc[idx, :].추천장소,
             })
     print('veganList all complete!!')
 
@@ -403,7 +420,9 @@ def vegan_data_chi(request) :
                 'imgURL': vegan_df.iloc[idx, :].imgURl,
                 'img': vegan_df.iloc[idx, :].jpg,
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-                'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+                'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+                'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': vegan_df.iloc[idx, :].추천장소,
             })
     print('veganList all complete!!')
 
@@ -426,7 +445,9 @@ def vegan_data_jap(request) :
                 'imgURL': vegan_df.iloc[idx, :].imgURl,
                 'img': vegan_df.iloc[idx, :].jpg,
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-                'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+                'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+                'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': vegan_df.iloc[idx, :].추천장소,
             })
     print('veganList all complete!!')
 
@@ -449,7 +470,9 @@ def vegan_data_cafe(request) :
                 'imgURL': vegan_df.iloc[idx, :].imgURl,
                 'img': vegan_df.iloc[idx, :].jpg,
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-                'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+                'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+                'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': vegan_df.iloc[idx, :].추천장소,
             })
     print('veganList all complete!!')
 
@@ -472,7 +495,9 @@ def vegan_data_bake(request) :
                 'imgURL': vegan_df.iloc[idx, :].imgURl,
                 'img': vegan_df.iloc[idx, :].jpg,
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-                'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+                'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+                'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': vegan_df.iloc[idx, :].추천장소,
             })
     print('veganList all complete!!')
 
@@ -495,7 +520,9 @@ def vegan_data_etc(request) :
                 'imgURL': vegan_df.iloc[idx, :].imgURl,
                 'img': vegan_df.iloc[idx, :].jpg,
                 'lat': (vegan_df.iloc[idx, :].위도).tolist(),  # numpy
-                'lng': (vegan_df.iloc[idx, :].경도).tolist()  # numpy
+                'lng': (vegan_df.iloc[idx, :].경도).tolist(),  # numpy
+                'WWGScore': (vegan_df.iloc[idx, :].WWGScore).tolist(),  # numpy
+                'recomm': vegan_df.iloc[idx, :].추천장소,
             })
     print('veganList all complete!!')
 

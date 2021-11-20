@@ -120,6 +120,7 @@
                </div>
 
                <div id="map"></div>
+               <div id="panel"></div>
                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGveLhPVVebqoESzKq-hxigHk1I0t_aWk&callback=initMap&v=weekly" async></script>
 
                <div class="col-md-12 col-sm-12 text-center">
@@ -192,6 +193,7 @@ function initMap() {
      map = new google.maps.Map(document.getElementById("map"), defaultOptions);
      getData() ;
      initPopup() ;
+     infoPane = document.getElementById('panel');
 }
 
 
@@ -201,7 +203,6 @@ function initMap() {
 function getData() {
     $('.button').click(function() {
         var button_id = $(this).attr('id') ;
-        alert(button_id) ;
         switch(button_id) {
             case 'ZEROWASTE' :
             clearMarkers() ;
@@ -420,6 +421,7 @@ function showInfowindow(markers) {
      for(let i = 0 ; i < markers.length ; i++) {
           google.maps.event.addListener(markers[i] , "click" , async function() {
                console.log("position : " + markers[i].position) ;
+               map.setCenter(markers[i].position) ;
 
                if(infowindow_contents[i]) {
                     await removePopup() ;
@@ -430,9 +432,11 @@ function showInfowindow(markers) {
                     if( moreDetail ) {
                          moreDetail.addEventListener("click" , function() {
                          console.log("click") ;
-                         showPlaceDetail(markers[i].title) ;
+                         showPlaceDetail(markers[i]) ;
                          }) ;
                     }
+
+
                     console.log("marker : " + markers[i].title) ;
                }
           }) ;
@@ -527,9 +531,76 @@ function createPopupClass() {
 /* -----------------------
           place detail
 ----------------------- */
-let placeInfo = [] ;
+<!--let placeInfo = [] ;-->
 <!--async function getPlaceDetail(temp_-->
 
+<!--function showPanel(markers) {-->
+<!--     if (infoPane.classList.contains("open")) {-->
+<!--          infoPane.classList.remove("open") ;-->
+<!--     }-->
+
+<!--     while (infoPane.lastChild) {-->
+<!--          infoPane.removeChild(infoPane.lastChild) ;-->
+<!--     }-->
+
+<!--     if (markers.photos) {-->
+<!--          var photo = {-->
+<!--               url : "{% static '/resources/theme/images/zerowaste/' %}{{markers.name}}-->
+<!--               size :-->
+<!--          }-->
+<!--     }-->
+<!--}-->
+
+function showPlaceDetail(markers , status) {
+           // If infoPane is already open, close it
+           if (infoPane.classList.contains("open")) {
+             infoPane.classList.remove("open");
+           }
+
+           // Clear the previous details
+           while (infoPane.lastChild) {
+             infoPane.removeChild(infoPane.lastChild);
+           }
+
+           /* TODO: Step 4E: Display a Place Photo with the Place Details */
+           // Add the primary photo, if there is one
+           if (markers.photos) {
+             let firstPhoto = markers.photos[0];
+             let photo = document.createElement('img');
+             photo.classList.add('hero');
+             photo.src = firstPhoto.getUrl();
+             infoPane.appendChild(photo);
+           }
+
+           // Add place details with text formatting
+           let name = document.createElement('h1');
+           name.classList.add('place');
+           name.textContent = markers.name;
+           infoPane.appendChild(name);
+           if (markers.rating) {
+             let rating = document.createElement('p');
+             rating.classList.add('details');
+             rating.textContent = `Rating: ${markers.rating} \u272e`;
+             infoPane.appendChild(rating);
+           }
+           let address = document.createElement('p');
+           address.classList.add('details');
+           address.textContent = markers.formatted_address;
+           infoPane.appendChild(address);
+           if (markers.website) {
+             let websitePara = document.createElement('p');
+             let websiteLink = document.createElement('a');
+             let websiteUrl = document.createTextNode(markers.website);
+             websiteLink.appendChild(websiteUrl);
+             websiteLink.title = markers.website;
+             websiteLink.href = markers.website;
+             websitePara.appendChild(websiteLink);
+             infoPane.appendChild(websitePara);
+           }
+
+           // Open the infoPane
+           infoPane.classList.add("open");
+}
 
 </script>
 
