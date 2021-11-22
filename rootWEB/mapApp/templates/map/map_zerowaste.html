@@ -393,24 +393,33 @@ function drawMarkers(zerowastePlaces) {
           marker.about = zerowastePlaces[i].about ;
           marker.lat = zerowastePlaces[i].lat ;
           marker.lng = zerowastePlaces[i].lng ;
+          marker.score = zerowastePlaces[i].WWGScore ;
+          marker.recomm = zerowastePlaces[i].recomm ;
 
           markers.push(marker) ;
-          makeInfowindow(marker) ;
-          console.log("markers : " + marker) ;
+          makeInfowindow(marker, zerowastePlaces[i].name) ;
+          console.log("markers : " + marker+" "+zerowastePlaces[i].name) ;
      }
-     showInfowindow(markers) ;
+     showInfowindow(markers, ) ;
 }
 
 /* info창 */
-function makeInfowindow(place) {
+function makeInfowindow(place,  asdf) {
+<!--     imgPath = asdf+'.jpg'-->
+<!--     var imgPath = "{% static '/resources/theme/images/zerowaste/' %}"+imgPath-->
      var temp_content =
-     "<div id = 'infoTitle' class = 'info_title'><div class='place_name'>" +
-     place.name +
-    "</div><div class='more_detail' onclick='showPlaceDetail(\"" +
-     place.name +
-     "\");'>&#62;</div></div><div class='info_rest'>" +
+     "<div id = 'infoTitle' class = 'info_title'><div class='place_name'>" + place.name +
+<!--     "</div></div><div class='info_img'><img src='"+imgPath+"'>"-->
+    "</div></div><div class='info_rest'>📍  " +
      place.address +
-     "</div>";
+     "</div><div class='info_rest'>📞 " +
+     place.number +
+     "</div><div class='info_rest'>📜 " +
+     place.about +
+     "</div><div class='info_rest'>⭐" +
+     place.score +
+     "</div><div class='info_rest'>➕ " +
+     place.recomm;
 
      console.log('temp_content : ' + temp_content) ;
      infowindow_contents.push(temp_content) ;
@@ -422,6 +431,7 @@ function showInfowindow(markers) {
           google.maps.event.addListener(markers[i] , "click" , async function() {
                console.log("position : " + markers[i].position) ;
                map.setCenter(markers[i].position) ;
+               map.setZoom(16) ;
 
                if(infowindow_contents[i]) {
                     await removePopup() ;
@@ -435,8 +445,6 @@ function showInfowindow(markers) {
                          showPlaceDetail(markers[i]) ;
                          }) ;
                     }
-
-
                     console.log("marker : " + markers[i].title) ;
                }
           }) ;
@@ -457,6 +465,7 @@ function createPopup(position , content) {
 
      map.addListener("click" , function() {
         removePopup() ;
+        map.setZoom(12) ;
      }) ;
 }
 
@@ -531,26 +540,6 @@ function createPopupClass() {
 /* -----------------------
           place detail
 ----------------------- */
-<!--let placeInfo = [] ;-->
-<!--async function getPlaceDetail(temp_-->
-
-<!--function showPanel(markers) {-->
-<!--     if (infoPane.classList.contains("open")) {-->
-<!--          infoPane.classList.remove("open") ;-->
-<!--     }-->
-
-<!--     while (infoPane.lastChild) {-->
-<!--          infoPane.removeChild(infoPane.lastChild) ;-->
-<!--     }-->
-
-<!--     if (markers.photos) {-->
-<!--          var photo = {-->
-<!--               url : "{% static '/resources/theme/images/zerowaste/' %}{{markers.name}}-->
-<!--               size :-->
-<!--          }-->
-<!--     }-->
-<!--}-->
-
 function showPlaceDetail(markers , status) {
            // If infoPane is already open, close it
            if (infoPane.classList.contains("open")) {

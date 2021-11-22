@@ -437,6 +437,8 @@ a:hover, a:active, a:focus {
     display: flex;
 }
 
+
+
 .radio-group {
     margin: auto;
     display: flex;
@@ -494,6 +496,7 @@ a:hover, a:active, a:focus {
     input:checked ~ .inner-label {
         &:after {
             content: '\2713';
+            border: : #01e602;
             color: #111111;
             position: absolute;
             font-size: 12px;
@@ -506,11 +509,14 @@ a:hover, a:active, a:focus {
 
 
 
+
+
+
 .popup_wrap {
   cursor: auto;
   height: 0;
   position: absolute;
-  width: 200px;
+  width: 500px;
 
 }
 
@@ -551,6 +557,7 @@ a:hover, a:active, a:focus {
 }
 
 .info_title {
+  width: 100%;
   border-bottom: 1px solid #cdcdcd;
   padding: 10px;
   font-size: 16px;
@@ -560,13 +567,20 @@ a:hover, a:active, a:focus {
 
 .place_name {
   display: inline-block;
-  max-width: 140px;
+  max-width: 500px;
 }
 
 .info_rest {
-  margin: 5px;
-  padding: 7px;
+  margin: 3px;
+  padding: 2px;
   font-size: 14px;
+}
+
+.info_img {
+    max-width: 35%;
+    width: auto';
+    height: auto;
+    object-fit: cover;
 }
 
 .more_detail {

@@ -204,7 +204,6 @@ function initMap() {
 function getData() {
      $('.button').click(function() {
           var button_id = $(this).attr('id') ;
-          alert(button_id) ;
           switch(button_id) {
               case 'VEGAN_ALL' :
               clearMarkers() ;
@@ -477,14 +476,20 @@ function drawMarkers(veganPlaces) {
 
 /* info창 */
 function makeInfowindow(place) {
+     var img = "{% static '/resources/theme/images/vegan/' %}{{place.name}}.jpg"
      var temp_content =
-     "<div id = 'infoTitle' class = 'info_title'><div class='place_name'>" +
-     place.name +
-    "</div><div class='more_detail' onclick='showPlaceDetail(\"" +
-     place.name +
-     "\");'>&#62;</div></div><div class='info_rest'>" +
+     "<div id = 'infoTitle' class = 'info_title'><div class='place_name'>" + place.name +
+     "</div></div><div class='info_img'>" + img +
+    "</div></div><div class='info_rest'>📍  " +
      place.address +
-     "</div>";
+     "</div><div class='info_rest'>📞 " +
+     place.number +
+     "</div><div class='info_rest'>📜 " +
+     place.about +
+     "</div><div class='info_rest'>⭐" +
+     place.score +
+     "</div><div class='info_rest'>➕ " +
+     place.recomm;
 
      console.log('temp_content : ' + temp_content) ;
      infowindow_contents.push(temp_content) ;
@@ -495,6 +500,8 @@ function showInfowindow(markers) {
      for(let i = 0 ; i < markers.length ; i++) {
           google.maps.event.addListener(markers[i] , "click" , async function() {
                console.log("position : " + markers[i].position) ;
+               map.setCenter(markers[i].position) ;
+               map.setZoom(16) ;
 
                if(infowindow_contents[i]) {
                     await removePopup() ;
@@ -528,6 +535,7 @@ function createPopup(position , content) {
 
      map.addListener("click" , function() {
         removePopup() ;
+        map.setZoom(12) ;
      }) ;
 }
 
