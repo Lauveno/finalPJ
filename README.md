@@ -1,3 +1,3 @@
-<h1>Multicampu<br>
+<h1>Multicampus<br>
 서비스 산업 데이터를 활용한 빅데이터 분석 실무</h1>
 Date / 2021.06.14 ~ 2021.11.24
